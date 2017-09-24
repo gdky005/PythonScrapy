@@ -13,6 +13,7 @@ BOT_NAME = 'Consumers12315'
 
 SPIDER_MODULES = ['Consumers12315.spiders']
 NEWSPIDER_MODULE = 'Consumers12315.spiders'
+ITEM_PIPELINES = {'Consumers12315.pipelines.Consumers12315Pipeline': 800, }
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
@@ -88,3 +89,5 @@ ROBOTSTXT_OBEY = False
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.54 Safari/536.5'

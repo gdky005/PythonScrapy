@@ -48,8 +48,12 @@ class Consumers12315_Detail(Spider):
         space = "\r\n\n\t"
         space1 = "\r\n"
         content1 = ""
+        text = ""
 
         # self.singleText(content1, i, isTitle, myContent, space)
+
+        from Consumers12315.items import Consumers12315Item
+        item = Consumers12315Item()
 
         for line in myContent:
 
@@ -58,6 +62,7 @@ class Consumers12315_Detail(Spider):
                 content1 += "当前的问题是：" + line + space1
                 content1 += "^^^^^^^^^^^^^^^^^^^^^^^^^^^^" + space
 
+                item['question'] = line
                 isTitle = False
                 continue
 
@@ -69,6 +74,8 @@ class Consumers12315_Detail(Spider):
                 content1 += "______________________" + space1
                 content1 += line + "---------------" + space1
                 content1 += "______________________" + space1
+
+                item['number'] = line
 
                 isTitle = True
                 continue
@@ -83,12 +90,16 @@ class Consumers12315_Detail(Spider):
                     continue
 
                 content1 += l
-                endChar = l[len(l) - 1]
+                text = l
 
+                endChar = l[len(l) - 1]
                 if Utils.isEndChar(endChar):
                     content1 += space
+
         print(content1)
 
+        item['answer'] = text
+        yield item
 
 
 
