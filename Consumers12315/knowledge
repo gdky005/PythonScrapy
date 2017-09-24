@@ -1,0 +1,394 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>全国12315互联网平台</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="/css/new/css/reset.css"/>
+    <link rel="stylesheet" href="/css/new/css/common.css"/>
+    <link rel="stylesheet" href="/css/new/css/style.css"/>
+    <!DOCTYPE html>
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+	window._swf_ = '/core-plugins/ew/depend/uploadify/scripts/uploadify.swf';
+</script>
+    <script src="/core-plugins/ew/depend/jquery/jquery.min.js"></script>
+    <script src="/core-plugins/ew/depend/cookie/jquery.cookie.js"></script>
+    <script src="/js/lib/jquery.paging.min.js"></script>
+    <script src="/js/lib/jquery.easy-paging.js"></script>
+    <script src="/js/lib/json2.js"></script>
+    <script src="/js/customer/click.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            $("#headerName").text("消费者维权知识");
+            $("#little").text("本栏目由《中国消费者》杂志维护");
+            paging.init();
+            //给搜索框添加回车事件
+            $("#zl_searchBox").keydown(function (e) {
+                if (e.which == 13) {//.which属性判断按下的是哪个键，回车键的键位序号为13
+                    $(".search-btn").trigger("click");//触发搜索按钮的点击事件
+                }
+            })
+
+            /*搜索*/
+            $(".search-btn").click(function () {
+                //$("#confirm").hide();
+                // $("#info").hide();
+                paging.init();
+            })
+            //$('.l-close').hide();
+            //搜索框删除功能
+            $('.l-close').on('click',function(){
+                $($(this).parent()).find("input").val("");
+                $('.l-close').hide();
+            });
+            $("#zl_searchBox").change(function(){
+                if($("#zl_searchBox").val()!=""){
+                    $('.l-close').show();
+                }else{
+                    $('.l-close').hide();
+                }
+
+            })
+            $(".card-index4").hide();
+
+//            $("#jd").hover(function(){
+//                $("#ejmu").stop(true,true).show(1000);
+//            },function(){
+//                $("#ejmu").stop(true,true).hide(1000);
+//            })
+
+        })
+
+
+
+        /*分页*/
+        var paging = {
+            page: 1,
+            pageSize: 16,
+            count: 13,
+            history: "",
+            num: 0,
+            init: function () {
+                paging.num = 0;
+                var id = "#zl_paging";
+                var pageBox = '<ol class="pagenation" id="zl_paging">' +
+                    '<!--点击页码时给 a加上类current，点击首页，上一页 尾页 下一页时不用加，state-default表示不可点击-->' +
+                    '<li>首页</li>' +
+                    '<li>上一页</li>' +
+                    '<li>#n</li>' +
+                    '<li>#n</li>' +
+                    '<li>#c</li>' +
+                    '<li>#n</li>' +
+                    '<li>#n</li>' +
+                    '<li>下一页</li>' +
+                    '<li>尾页</li>' +
+                    '</ol>';
+                $("#zl_paging").remove();
+                $("#zl_itemlist").append(pageBox);
+                paging.count = this.query(1);
+                this.bindSelect(paging.count, id);
+            },
+            bindSelect: function (count, id) {
+                $(id).easyPaging(count, {
+                    onSelect: function (page) {
+                        if (paging.num == 1 && page == 1) {
+                        } else {
+                            paging.query(page);
+                        }
+                    }
+                }, paging.pageSize);
+            },
+            query: function (page) {
+                var word = $.trim($("#zl_searchBox").val());
+                paging.num++;
+                var count = 0;
+                $.ajax({
+                    url: "/knowledge/searchlist",
+                    type: "post",
+                    dataType: "json",
+                    async: false,
+                    data: {
+                        type: "2",
+                        keyword: word,
+                        pageIndex: page,
+                        pageSize: paging.pageSize,
+                    },
+                    success: function (data) {
+                        var list = data.pageContent;
+                        var str = "";
+                        $("#zl_ul").empty();
+                        if (list.length == 0) {
+                            $(".statebox").show();
+                            $(".listbox").hide();
+                            $("#zl_paging").hide();
+                        } else {
+                            $(".statebox").hide();
+                            $(".listbox").show();
+                            for (var i = 0; i < list.length; i++) {
+                                if( list[i].ZLCODE=='deb7c6e0af7948f69a035b8083cacee5'){
+                                    str +="<li class='item' id='jd'><a onclick=\"toDetail(\'" + list[i].ZLCODE + "\')\" class='i-title fn-text' title="+ list[i].ZLTITLE +">" + list[i].HIGHLIGHTTITLE + "</a>" +
+                                            "<span class='i-time'>" + list[i].ZLFBRQ + "</span>"+
+                                            " <div class='item-more' id='ejmu' style='display:none'><i class='item-more-icon'></i>"+
+                                            "<a  width='300px' onclick=\"toDetail(\'" +  21+ "\')\"  title='家电消费咨询与投诉现状分析报告'>家电消费咨询与投诉现状分析报告</a>" +
+                                            "<a  width='300px' onclick=\"toDetail(\'" +  22+ "\')\"  title='家电及主要部件材质科学消费指引'>家电及主要部件材质科学消费指引</a>" +
+                                            "<a  width='300px' onclick=\"toDetail(\'" +  23+ "\')\"  title='家用燃气热水器及主要部件材质消费指引'>家用燃气热水器及主要部件材质消费指引</a>" +
+                                            "<a  width='300px' onclick=\"toDetail(\'" +  24+ "\')\"  title='家用分体式空调器及主要部件材质消费指引'>家用分体式空调器及主要部件材质消费指引</a>" +
+                                            "<a  width='300px' onclick=\"toDetail(\'" +  25+ "\')\"  title='家用电冰箱及主要部件科学消费指引'>家用电冰箱及主要部件科学消费指引</a>" +
+                                            "<a  width='300px' onclick=\"toDetail(\'" +  26+ "\')\"  title='家用洗衣机及主要部件科学消费指引'>家用洗衣机及主要部件科学消费指引</a>" +
+                                            "<a  width='300px' onclick=\"toDetail(\'" +  27+ "\')\"  title='家用采暖散热器及主要部件科学消费指引'>家用采暖散热器及主要部件科学消费指引</a>" +
+                                            "<a  width='300px' onclick=\"toDetail(\'" +  27+ "\')\"  title='家用热泵（空气能）热水器及主要部件材质科学消费指引'>家用热泵（空气能）热水器及主要部件材质科学消费指引</a>" +
+                                            "<a  width='300px' onclick=\"toDetail(\'" +  29+ "\')\"  title='网购家电常见问题解答'>网购家电常见问题解答</a>" +
+//                                            "<a onclick=\"toDetail(\'" +  27+ "\')\" class='i-title fn-text' title='家用采暖散热器及主要部件科学消费指引'>家用采暖散热器及主要部件科学消费指引</a>" +
+                                            "</div>"+
+                                            "</li>";
+                                }else{
+                                    str += "<li class='item'><a onclick=\"toDetail(\'" + list[i].ZLCODE + "\')\" class='i-title fn-text' title="+ list[i].ZLTITLE +">" + list[i].HIGHLIGHTTITLE + "</a>" +
+                                            "<span class='i-time'>" + list[i].ZLFBRQ + "</span></li>";
+                                }
+
+
+
+                                }
+                            //$(".listbox").show();
+                            $("#zl_paging").show();
+                            $("#zl_ul").html(str);
+
+                        }
+                        count = data.totalRow;
+                    }
+                })
+                return count;
+            }
+        };
+        var dis="1";
+        function toDetail(zlcode) {
+            if(zlcode=="deb7c6e0af7948f69a035b8083cacee5"){
+                $("#ejmu").show();
+                if(dis=="1"){
+                    $("#ejmu").show();
+                    $("#jd").removeClass().addClass("item itemMore");
+                    dis="2";
+                }else{
+                    $("#ejmu").hide();
+                    $("#jd").removeClass().addClass("item");
+                    dis="1"
+                }
+            }else{
+                $("#ejmu").hide();
+                $("#jd").removeClass().addClass("item");
+              //  window.location.href = "/knowledge/knowledgeView?zlcode=" + zlcode + "&type=2";
+                window.open("/knowledge/knowledgeView?zlcode=" + zlcode + "&type=2");
+            }
+        }
+    </script>
+    <style>
+        .listBox li.itemMore{ height: auto;}
+        .item-more{position: relative; background: #f2f2f2; padding: 5px; line-height: 30px; margin-bottom: 10px; clear: both;}
+        .item-more .item-more-icon{display: block; width: 12px; height: 6px; background: url(/css/new/images/tri.png) no-repeat; position: absolute; top: -6px;}
+        .item-more a{color: #333; margin: 0 4px;display:inline-block;min-width: 300px}
+        .item-more a:hover{ color: #333; text-decoration: underline;}
+    </style>
+</head>
+<body>
+
+
+
+
+
+<!DOCTYPE html>
+<div class="header">
+    <div class="container headerBox">
+        <a href="/" class="logo" id="logo"></a>
+        <h3 style="position:relative"><span id="headerName" ></span>
+            <b class="fn-color-999" id="little" style="margin:-12px 0 0px 15px; display:block;"></b>
+        </h3>
+        <div class="loginHd "  id="loginOut">
+            <span class="ico">已有账号?</span>
+            <a href="/cuser/">请登录</a>
+        </div>
+        <div class="loginIn login-in" id="loginIn" style="display:none">
+            <a id="userName" href="/cuser/portal/"><span ><img src="/css/new/img/tx_boy.jpg"></span></a>
+            <ul class="dropbox" style="display: none;width:100px;" id="dropboxulloginin">
+                <li><a href="/cuser/portal/?gotype=passwd" style="width: 90%">密码修改</a></li>
+                <li><a href="/cuser/portal/logout" style="width: 90%" >退出</a></li>
+            </ul>
+        </div>
+        <a class="btnback fn-right" href="/">返回首页</a>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        if($('#userName').text() != ""){
+            $('#loginOut').hide();
+            $('#loginIn').show();
+
+        }
+        
+        
+        
+
+        var myDate = new Date()
+        var month = myDate.getMonth()+1;
+        var date_ymd = myDate.getFullYear() + "年" + month + "月" + myDate.getDate() + "日";
+        $('#ymd').text(date_ymd);
+        var days = myDate.getDay();
+        var day;
+        if('0' == days){
+            day = "星期天";
+        }else if('1' == days){
+            day = "星期一";
+        }else if('2' == days){
+            day = "星期二";
+        }else if('3' == days){
+            day = "星期三";
+        }else if('4' == days){
+            day = "星期四";
+        }else if('5' == days){
+            day = "星期五";
+        }else if('6' == days){
+            day = "星期六";
+        }
+        $('#day').text(day);
+
+        $('#loginIn').mouseover(function(){
+            $('#dropboxulloginin').show();
+        });
+
+        $('#loginIn').mouseout(function(){
+            $('#dropboxulloginin').hide();
+        });
+    });
+</script>
+
+
+
+<div class="container fn-pt-20">
+    <div class="w750 fn-left shadow">
+        <div class="listPanel" id="zl_itemlist">
+            <div class="listTop">
+                <div class="searchBox">
+                    <!--空div，放切的左边圆角-->
+                    <div class=" s-bg left"></div>
+                    <div class="search-input"><i class="l-close" style="display:none"></i><input placeholder="请输入要搜索的内容" id="zl_searchBox"/></div>
+                    <div class="search-btn"><em></em></div>
+                    <div class=" s-bg right"></div>
+                </div>
+            </div>
+            <!--搜索没有结果时-->
+            <div class="statebox" style="display: none;text-align: center" id="fg_no_search">
+                <dl class="noResult">
+                    <dd id="keyword_notice">没有找到 相关结果</dd>
+                    <dt>输入准确的关键词，重新搜索</dt>
+                </dl>
+            </div>
+            <div class="listBox">
+                <ul id="zl_ul">
+
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+<div class="w295 fn-right">
+    <div class="card card-ts shadow">
+        <em class="ico"></em>
+        <a class="btn" href="/cuser/portal/tscase/notice">我要投诉</a>
+    </div>
+    <div class="card card-jb shadow">
+        <em class="ico"></em>
+        <a class="btn" href="/cuser/portal/jbcase/notice">我要举报</a>
+    </div>
+    <div class="card card-index card-index1 shadow">
+        <em class="ico"></em>
+        <p>经营者基本信息</p>
+        <a class="btn" href="/corperation/index">点击进入</a>
+    </div>
+    <div class="card card-index card-index2 shadow">
+        <em class="ico"></em>
+        <p>经营者地理信息</p>
+        <a class="btn" href="/amap/main">点击进入</a>
+    </div>
+    <div class="card card-index card-index3 shadow">
+        <em class="ico"></em>
+        <p>消费者维权法规</p>
+        <a class="btn" href="/knowledge/regulation">点击进入</a>
+    </div>
+    <div class="card card-index card-index4 shadow">
+        <em class="ico"></em>
+        <p>消费者维权知识</p>
+        <a class="btn" href="/knowledge/rights_knowledge">点击进入</a>
+    </div>
+    <div class="card card-code">
+        <a class="code-box code-wechat">
+            <em></em>
+            微信公众号
+            <div class="code-pic shadow">
+                <img src="/css/new/img/code.jpg">
+                <b class="addon"></b>
+            </div>
+        </a>
+        <a class="code-box code-mini">
+            <em></em>
+            微信小程序
+            <div class="code-pic shadow">
+            <img src="/css/new/img/mini.jpg"/>
+            <b class="addon"></b>
+            </div>
+        </a>
+        <a class="code-box code-app">
+            <em></em>
+            手机APP
+            <div class="code-pic shadow">
+                <img src="/css/new/img/app.png"/>
+                <b class="addon"></b>
+            </div>
+        </a>
+    </div>
+</div>
+</div>
+<!-- 底部 -->
+
+<!DOCTYPE html>
+<head>
+
+</head>
+<div class="foot foot2">
+	<div class="bottom">
+		<p>主办：中华人民共和国国家工商行政管理总局    京ICP备16053442号-2
+		</p>
+		<p>地址：北京市西城区三里河东路八号    邮政编码：100820</p>
+		<p>National Internet Platform of Consumer Dispute Resolution</p>
+<!--		<div class="find_error">
+			<span id="_span_jiucuo"></span>
+			<script id="_jiucuo_" sitecode='bm30000014' src='http://pucha.kaipuyun.cn/exposure/jiucuo.js'></script>
+		</div> -->
+	</div>
+
+</div>
+
+</body>
+</html>
+
+<script type="text/javascript">
+<!--
+	(function(data) {
+		if (!window['Zepto'] && window['$']) {
+			// jQuery for brower
+			$(document).data('ew-ui-zrardata', data);
+		} else {
+			// Zepto for mobile
+			window['euidata'] = data;
+		}
+	})( {"warn":"","message":"","statusCode":"200","zrarData":{"tree":{},"form":{},"select":{},"checkbox":{},"radio":{},"grid":{},"asyncTree":{}},"json":{}});
+//-->
+</script>
