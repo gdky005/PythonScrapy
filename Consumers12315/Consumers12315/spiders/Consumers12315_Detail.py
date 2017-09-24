@@ -63,7 +63,7 @@ class Consumers12315_Detail(Spider):
 
             if Utils.matchTitle(line):
                 i += 1
-                if i > 10:
+                if i > 1:
                     break
 
                 content1 += "______________________" + space1
