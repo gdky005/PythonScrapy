@@ -24,6 +24,9 @@ class DouYin(Spider):
             'url': 'http://www.runoob.com'
         }
 
+        from DouYin.items import DouyinItem
+        item = DouyinItem()
+
         # json_str = json.dumps(content)
         json_str = json.loads(content)
         # print(json_str["extra"]["now"])
@@ -31,7 +34,10 @@ class DouYin(Spider):
         # print("Python 原始数据：", repr(data))
         # print("JSON 对象：", json_str)
 
+        item['name'] = json_str["aweme_list"][0]["music"]["author"]
+        item['pic'] = json_str["aweme_list"][0]["music"]["cover_hd"]["url_list"][0]
 
+        yield item
 
 
 
