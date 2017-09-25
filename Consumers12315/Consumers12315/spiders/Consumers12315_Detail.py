@@ -24,18 +24,94 @@ class Consumers12315_Detail(Spider):
 
         selector = Selector(response)
 
+        # self.getBigTitle(selector)
+        # self.getSmallTitle(selector)
+        # yield from self.insertData2DB(myContent)
+
+        # self.getBigTitle(selector)
+        # self.getSmallTitle(selector)
+        # self.oldGetContent(selector)
+
+        self.newGetContent(selector)
+
+
+    # 旧的获取内容的方法
+    def oldGetContent(self, selector):
+        bigTitle = selector.xpath('//div[@class="hd"]/h2/text()').extract()
+
+        myContent = selector.xpath('//div[@class="WordSection1"]/p[@class="MsoNormal"]/span//text()').extract()
+
+        currentNumber = 0
+        i = 0
+        isTitle = False
+        space = "\r\n\n\t"
+        space1 = "\r\n"
+        content1 = ""
+        text = ""
+        for line in myContent:
+
+            if isTitle:
+                content1 += "^^^^^^^^^^^^^^^^^^^^^^^^^^^^" + space1
+                content1 += "当前的问题是：" + line + space1
+                content1 += "^^^^^^^^^^^^^^^^^^^^^^^^^^^^" + space
+
+                isTitle = False
+                continue
+
+            if Utils.matchTitle(line):
+                i += 1
+                # if i > 10:
+                #     break
+
+                # //把 line 转成成 数字存储起来
+                lineNumber = int(line.split(".")[0])
+                # print("下面是 lineNumber：")
+                # print(lineNumber)
+
+                if lineNumber < currentNumber:
+                    content1 += line
+                    continue
+
+                currentNumber = lineNumber
+                print("currentNumber:")
+                print(currentNumber)
+
+                content1 += "______________________" + space1
+                content1 += line + "---------------" + space1
+                content1 += "______________________" + space1
+
+                isTitle = True
+                continue
+
+            if ~isTitle:
+                l = line
+                # for l in line:
+
+                if Utils.matchTitle(l):
+                    # content1 += line
+                    content1 += space
+                    continue
+
+                content1 += l
+                text = l
+
+                endChar = l[len(l) - 1]
+                if Utils.isEndChar(endChar):
+                    content1 += space
+        print(content1)
+
+    # 从内容获取 新的获取方式
+    def newGetContent(self, selector):
         # 换新方式获取
-
         answerContent = selector.css('div.WordSection1')[0].select("p").select("string(.)").extract()
-        names = selector.css("p.MsoNormal > span[style='font-size:16.0pt;font-family:仿宋_GB2312;color:black']::text").extract()
+        names = selector.css(
+            "p.MsoNormal > span[style='font-size:16.0pt;font-family:仿宋_GB2312;color:black']::text").extract()
         titleList = []
-
         currentLineNumber = 0
-
         titleReplaceState = False
         for line in names:
             if titleReplaceState:
-                titleList.append("%d.%s"%(currentLineNumber, line))
+                titleList.append("%d.%s" % (currentLineNumber, line))
                 titleReplaceState = False
                 continue
 
@@ -48,24 +124,12 @@ class Consumers12315_Detail(Spider):
 
         # for name in titleList:
         #     print(name)
-
-
         answer = []
-
         qIndex = 0
         newAnswer = []
-
         for t in answerContent:
             if qIndex < len(titleList):
-
                 if t == titleList[qIndex]:
-
-                    # if (i == 0) {
-                    # System.out.println("Continue");
-                    # qIndex++;
-                    # continue;
-                    # }
-
                     if qIndex == 0:
                         qIndex += 1
                         continue
@@ -73,124 +137,16 @@ class Consumers12315_Detail(Spider):
                     newAnswer.append("".join(answer))
                     answer = []
                     qIndex += 1
-
                 else:
                     answer.append(t + "\r\n")
-
             else:
                 answer.append(t + "\r\n")
-
         newAnswer.append("".join(answer))
-
         i = 0
         for a in titleList:
             print("问题：" + titleList[i].__str__())
             print("答案：" + newAnswer[i].__str__())
             i += 1
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        # bigTitle = selector.xpath('//div[@class="hd"]/h2/text()').extract()
-        #
-        # myContent = selector.xpath('//div[@class="WordSection1"]/p[@class="MsoNormal"]/span//text()').extract()
-        #
-        # # self.getBigTitle(selector)
-        # # self.getSmallTitle(selector)
-        # # yield from self.insertData2DB(myContent)
-        #
-        #
-        #
-        # # self.getBigTitle(selector)
-        # # self.getSmallTitle(selector)
-        #
-        # currentNumber = 0
-        #
-        # i = 0
-        # isTitle = False
-        # space = "\r\n\n\t"
-        # space1 = "\r\n"
-        # content1 = ""
-        # text = ""
-        # for line in myContent:
-        #
-        #     if isTitle:
-        #         content1 += "^^^^^^^^^^^^^^^^^^^^^^^^^^^^" + space1
-        #         content1 += "当前的问题是：" + line + space1
-        #         content1 += "^^^^^^^^^^^^^^^^^^^^^^^^^^^^" + space
-        #
-        #         isTitle = False
-        #         continue
-        #
-        #     if Utils.matchTitle(line):
-        #         i += 1
-        #         # if i > 10:
-        #         #     break
-        #
-        #             # //把 line 转成成 数字存储起来
-        #         lineNumber = int(line.split(".")[0])
-        #         # print("下面是 lineNumber：")
-        #         # print(lineNumber)
-        #
-        #         if lineNumber < currentNumber:
-        #             content1 += line
-        #             continue
-        #
-        #         currentNumber = lineNumber
-        #         print("currentNumber:")
-        #         print(currentNumber)
-        #
-        #         content1 += "______________________" + space1
-        #         content1 += line + "---------------" + space1
-        #         content1 += "______________________" + space1
-        #
-        #         isTitle = True
-        #         continue
-        #
-        #     if ~isTitle:
-        #         l = line
-        #         # for l in line:
-        #
-        #         if Utils.matchTitle(l):
-        #             # content1 += line
-        #             content1 += space
-        #             continue
-        #
-        #         content1 += l
-        #         text = l
-        #
-        #         endChar = l[len(l) - 1]
-        #         if Utils.isEndChar(endChar):
-        #             content1 += space
-        # print(content1)
-
-
-
-
-
-
-
 
     # 插入单条数据到数据库中
     def insertData2DB(self, myContent):
