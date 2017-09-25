@@ -31,8 +31,66 @@ class Consumers12315_Detail(Spider):
         # self.getBigTitle(selector)
         # self.getSmallTitle(selector)
         # self.oldGetContent(selector)
+        # self.newGetContent(selector)
 
-        self.newGetContent(selector)
+        # 换新方式获取
+        answerContent = selector.css('div.WordSection1')[0].select("p").select("string(.)").extract()
+        names = selector.css(
+            "p.MsoNormal > span[style='font-size:16.0pt;font-family:仿宋_GB2312;color:black']::text").extract()
+
+        from Consumers12315.items import Consumers12315Item
+        item = Consumers12315Item()
+
+        titleList = []
+        currentLineNumber = 0
+        titleReplaceState = False
+        for line in names:
+            if titleReplaceState:
+                titleList.append("%d.%s" % (currentLineNumber, line))
+                titleReplaceState = False
+                continue
+
+            try:
+                lineNumber = int(line.split(".")[0])
+                currentLineNumber = lineNumber
+                titleReplaceState = True
+            except:
+                titleReplaceState = False
+
+        # for name in titleList:
+        #     print(name)
+        answer = []
+        qIndex = 0
+        newAnswer = []
+        for t in answerContent:
+            if qIndex < len(titleList):
+                if t == titleList[qIndex]:
+                    if qIndex == 0:
+                        qIndex += 1
+                        continue
+
+                    newAnswer.append("".join(answer))
+                    answer = []
+                    qIndex += 1
+                else:
+                    answer.append(t + "\r\n")
+            else:
+                answer.append(t + "\r\n")
+        newAnswer.append("".join(answer))
+        i = 0
+        for a in titleList:
+            question = titleList[i].__str__()
+            question = question.split(".")[1]
+
+            print("问题：" + question)
+            print("答案：" + newAnswer[i].__str__())
+            item['question'] = question
+            item['answer'] = newAnswer[i].__str__()
+
+            i += 1
+            item['number'] = i
+            yield item
+
 
 
     # 旧的获取内容的方法
