@@ -26,10 +26,11 @@ class JuediqiushengPipeline(object):
 
         id = item['id']
         jid = item['jid']
+        name = item['name']
         url = item['url']
 
-        sql = "INSERT INTO " + self.table_name + " (number, question, answer) VALUES (%s, %s, %s)"
-        cur.execute(sql, (id, jid, url))
+        sql = "INSERT INTO " + self.table_name + " (id, jid, name, url) VALUES (%s, %s, %s, %s)"
+        cur.execute(sql, (id, jid, name, url))
         cur.close()
         self.conn.commit()
 

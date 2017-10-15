@@ -14,5 +14,6 @@ class JuediqiushengItem(scrapy.Item):
     # name = scrapy.Field()
     id = Field()
     jid = Field()
+    name = Field()
     url = Field()
     pass
