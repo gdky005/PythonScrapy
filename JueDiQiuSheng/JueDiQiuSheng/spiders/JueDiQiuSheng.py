@@ -41,8 +41,16 @@ class JueDiQiuSheng(Spider):
             name = e["name"]
             url = e["url"]
             picUrl = e["picUrl"]
+            category_id = e["category_id"]
+            category_name = e["category_name"]
 
-            yield insertData2DB(name, url, picUrl)
+            print(
+                "\tname: " + name +
+                "\tcategory_id: " + category_id +
+                "\tcategory_name: " + category_name
+            )
+
+            yield insertData2DB(name, url, picUrl, category_id, category_name)
 
 
 # 入门必备
@@ -62,7 +70,19 @@ def rmbb(element):
     print("获取 " + name + " link 属性：")
     infoList += getElement(linkElements)
 
+    category_url = GLHJtit.css("a::attr('href')").extract()[0]
+    addCategoryData(infoList, name, category_url)
+
     return infoList
+
+
+# 添加分类属性
+def addCategoryData(infoList, name, category_url):
+    category_id = getCategoryId(category_url)
+    print("获取 " + name + " category_id：" + category_id)
+    for item in infoList:
+        item["category_id"] = category_id
+        item["category_name"] = name
 
 
 # 获取 攻略合集 里面 除过 入门必备 的其他分类
@@ -76,7 +96,15 @@ def getOtherKinds(element):
 
         imgliklistElements = e.css("ul.liklist").css("li.line1")
         print("获取 " + name + " 带图片属性：")
-        infoList += getElement(imgliklistElements)
+        elementList = getElement(imgliklistElements)
+
+        try:
+            category_url = sTitle.css("a::attr('href')").extract()[0]
+            addCategoryData(elementList, name, category_url)
+        except:
+            pass
+
+        infoList += elementList
 
     return infoList
 
@@ -133,8 +161,20 @@ def getJid(url):
     return newUrl
 
 
+# 获取对应的 category_id
+def getCategoryId(url):
+    url = url[0: url.__len__() - 1]
+    print(url)
+
+    start = url.rindex("_")
+    categoryId = url[(start + 1):url.__len__()]
+    if categoryId.__contains__("-"):
+        categoryId = categoryId[0:categoryId.rindex("-")]
+    return categoryId
+
+
 # 插入数据到数据库中
-def insertData2DB(name, url, pic_url):
+def insertData2DB(name, url, pic_url, category_id, category_name):
     jid = getJid(url)
 
     item = JuediqiushengItem()
@@ -142,4 +182,7 @@ def insertData2DB(name, url, pic_url):
     item['name'] = name
     item['url'] = url
     item['picUrl'] = pic_url
+    item['categoryId'] = category_id
+    item['categoryName'] = category_name
+
     return item

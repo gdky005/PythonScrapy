@@ -10,14 +10,31 @@ def getJid(url):
     return newUrl
 
 
-# print("Jid=" + getJid(url1))
+def getCategoryId(url):
+    url = url[0: url.__len__() - 1]
+    print(url)
 
-l1 = [1,2,3]
-l2 = [4,5,6]
+    start = url.rindex("_")
+    categoryId = url[(start + 1):url.__len__()]
+    if categoryId.__contains__("-"):
+        categoryId = categoryId[0:categoryId.rindex("-")]
+    return categoryId
 
-l1 += l2
+
+#
+# # print("Jid=" + getJid(url1))
+#
+# l1 = [1,2,3]
+# l2 = [4,5,6]
+#
+# l1 += l2
+#
+#
+#
+# for a in l1:
+#     print(a)
 
 
+categoryUrl = "http://www.gamersky.com/z/playbattlegrounds/862094_64754/"
 
-for a in l1:
-    print(a)
+print(getCategoryId(categoryUrl))

@@ -29,9 +29,12 @@ class JuediqiushengPipeline(object):
         name = item['name']
         url = item['url']
         picUrl = item['picUrl']
+        categoryId = item['categoryId']
+        categoryName = item['categoryName']
 
-        sql = "INSERT INTO " + self.table_name + " (jid, name, url, picUrl) VALUES (%s, %s, %s, %s)"
-        cur.execute(sql, (jid, name, url, picUrl))
+        sql = "INSERT INTO " + self.table_name + " (jid, name, url, picUrl, categoryId, categoryName)" \
+                                                 " VALUES (%s, %s, %s, %s, %s, %s)"
+        cur.execute(sql, (jid, name, url, picUrl, categoryId, categoryName))
         cur.close()
         self.conn.commit()
 
