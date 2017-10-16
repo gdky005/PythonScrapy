@@ -20,7 +20,6 @@ class JueDiQiuSheng(Spider):
         # print(content)
 
         selector = Selector(text=content)
-        # names = selector.xpath('//ul[@id="zl_ul"]/li/a/text()').extract()
 
         # 获取大分类
         midLSelector = selector.css("div.Mid_L")[0]
@@ -36,17 +35,6 @@ class JueDiQiuSheng(Spider):
         rmbb(g_l_h_j)
         getOtherKinds(g_l_h_j2)
 
-
-
-        # smallTitle = g_l_h_j.css("span.GLHJtit").css("span::text")[0].extract()
-        # print("小标题是：" + smallTitle)
-        #
-        # element = g_l_h_j.css("ul.imgliklist").css("li.img")
-        # print("获取 " + smallTitle + " 带图片属性：")
-
-        # getElement(element)
-
-
         # item = JuediqiushengItem()
         #
         # item['id'] = '0023133333'
@@ -55,7 +43,7 @@ class JueDiQiuSheng(Spider):
         # item['url'] = "http://www.baidu.com"
         #
         # yield item
-# //todo
+
 
 # 入门必备
 def rmbb(element):
@@ -73,20 +61,9 @@ def rmbb(element):
     print("获取 " + name + " link 属性：")
     getElement(linkElements)
 
+
 # 获取 攻略合集 里面 除过 入门必备 的其他分类
 def getOtherKinds(element):
-    # for (Element element: allGonglue) {
-    #     Elements
-    # sTitle = element.select("span.GLHJtit");
-    # String
-    # name = sTitle.get(0).text();
-    # System.out.println("小标题：\n\t" + name);
-    #
-    # Elements
-    # imgliklistElements = element.select("ul.liklist").select("li.line1");
-    # System.out.println("获取 " + name + " 带图片属性：");
-    # getElement(imgliklistElements);
-    # }
     for e in element:
         sTitle = e.css("span.GLHJtit")
         name = sTitle.select("string(.)").extract()[0]
@@ -95,13 +72,6 @@ def getOtherKinds(element):
         imgliklistElements = e.css("ul.liklist").css("li.line1")
         print("获取 " + name + " 带图片属性：")
         getElement(imgliklistElements)
-
-
-    # Elements
-    # imgliklistElements = element.select("ul.liklist").select("li.line1");
-    # System.out.println("获取 " + name + " 带图片属性：");
-    # getElement(imgliklistElements);
-
 
 
 # 获取相关属性
