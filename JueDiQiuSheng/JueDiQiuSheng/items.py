@@ -16,4 +16,5 @@ class JuediqiushengItem(scrapy.Item):
     jid = Field()
     name = Field()
     url = Field()
+    picUrl = Field()
     pass

@@ -24,13 +24,14 @@ class JuediqiushengPipeline(object):
         # 给库中插入数据
         cur = self.conn.cursor()
 
-        id = item['id']
+        # id = item['id']
         jid = item['jid']
         name = item['name']
         url = item['url']
+        picUrl = item['picUrl']
 
-        sql = "INSERT INTO " + self.table_name + " (id, jid, name, url) VALUES (%s, %s, %s, %s)"
-        cur.execute(sql, (id, jid, name, url))
+        sql = "INSERT INTO " + self.table_name + " (jid, name, url, picUrl) VALUES (%s, %s, %s, %s)"
+        cur.execute(sql, (jid, name, url, picUrl))
         cur.close()
         self.conn.commit()
 
