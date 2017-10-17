@@ -7,7 +7,48 @@
 import Constant as Globle
 import pymysql
 
+
 class JuediqiushengPipeline(object):
+    host = Globle.Constant.host
+    port = Globle.Constant.port
+    user = Globle.Constant.user
+    password = Globle.Constant.password
+    database_name = Globle.Constant.database_name
+    table_name = Globle.Constant.table_name
+    charset = Globle.Constant.charset
+
+    def __init__(self):
+        self.conn = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.password,
+                                    db=self.database_name, charset=self.charset)
+
+    def process_item(self, item, spider):
+        try:
+            # 给库中插入数据
+            cur = self.conn.cursor()
+
+            # id = item['id']
+            jid = item['jid']
+            name = item['name']
+            url = item['url']
+            picUrl = item['picUrl']
+            categoryId = item['categoryId']
+            categoryName = item['categoryName']
+
+            sql = "INSERT INTO " + self.table_name + " (jid, name, url, picUrl, categoryId, categoryName)" \
+                                                     " VALUES (%s, %s, %s, %s, %s, %s)"
+            cur.execute(sql, (jid, name, url, picUrl, categoryId, categoryName))
+            cur.close()
+            self.conn.commit()
+
+            return item
+        except:
+            pass
+
+    def close_spider(self):
+        self.conn.close()
+
+
+class JDQSDetailPipeline(object):
     host = Globle.Constant.host
     port = Globle.Constant.port
     user = Globle.Constant.user
@@ -26,15 +67,14 @@ class JuediqiushengPipeline(object):
 
         # id = item['id']
         jid = item['jid']
-        name = item['name']
-        url = item['url']
-        picUrl = item['picUrl']
-        categoryId = item['categoryId']
-        categoryName = item['categoryName']
+        artifactName = item['artifactName']
+        artifactAuthor = item['artifactAuthor']
+        content = item['content']
 
-        sql = "INSERT INTO " + self.table_name + " (jid, name, url, picUrl, categoryId, categoryName)" \
-                                                 " VALUES (%s, %s, %s, %s, %s, %s)"
-        cur.execute(sql, (jid, name, url, picUrl, categoryId, categoryName))
+        sql = "INSERT INTO " + self.table_name + " (jid, artifactName, artifactAuthor, content)" \
+                                                 " VALUES (%s, %s, %s, %s)"
+        cur.execute(sql, (jid, artifactName, artifactAuthor, content))
+
         cur.close()
         self.conn.commit()
 

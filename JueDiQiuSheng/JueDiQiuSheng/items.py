@@ -20,3 +20,14 @@ class JuediqiushengItem(scrapy.Item):
     categoryId = Field()
     categoryName = Field()
     pass
+
+
+class JDQSDetailItem(scrapy.Item):
+    # define the fields for your item here like:
+    # name = scrapy.Field()
+    id = Field()
+    jid = Field()
+    artifactName = Field()
+    artifactAuthor = Field()
+    content = Field()
+    pass

@@ -4,9 +4,9 @@ from scrapy import Selector
 from scrapy.spiders import Spider
 from selenium import webdriver
 
-from JueDiQiuSheng.items import JuediqiushengItem
-
 import JueDiQiuSheng.Constant_JDQS as Constant
+
+from JueDiQiuSheng.items import JDQSDetailItem
 
 
 class JueDiQiuShengDetail(Spider):
@@ -29,6 +29,7 @@ class JueDiQiuShengDetail(Spider):
 
         print("当前文件中的 id 是：" + jid)
 
+        # yield insertData2DB(jid, "我是文章名字", "wq", "我是内容内容")
 
 
         pages = []
@@ -59,12 +60,15 @@ class JueDiQiuShengDetail(Spider):
 
         if length is None or length == 0:
             print("正文内容是：\r\n" + subString)
+            yield insertData2DB(jid, articleName, articleAuthor, subString)
         else:
             for i in range(length):
                 yield scrapy.Request(url=pages[i], meta={
                     "page": i + 1,
                     "pageCount": length,
                     "jid": jid,
+                    "articleName": articleName,
+                    "articleAuthor": articleAuthor,
                 }, callback=self.parserData)
 
     @staticmethod
@@ -75,6 +79,8 @@ class JueDiQiuShengDetail(Spider):
         page = response.meta["page"]
         pageCount = response.meta["pageCount"]
         jid = response.meta["jid"]
+        articleName = response.meta["articleName"]
+        articleAuthor = response.meta["articleAuthor"]
 
         subString = ""
         selector = Selector(text=content)
@@ -92,6 +98,7 @@ class JueDiQiuShengDetail(Spider):
                 content += text
 
             print("正文内容是：\r\n" + content)
+            yield insertData2DB(jid, articleName, articleAuthor, subString)
 
             Constant.global_detail_list.clear()
 
@@ -136,3 +143,14 @@ def getJid(url):
         pass
 
     return newUrl
+
+
+# 插入数据到数据库中
+def insertData2DB(jid, artifact_name, artifact_author, content):
+    item = JDQSDetailItem()
+    item['jid'] = jid
+    item['artifactName'] = artifact_name
+    item['artifactAuthor'] = artifact_author
+    item['content'] = content
+
+    return item
