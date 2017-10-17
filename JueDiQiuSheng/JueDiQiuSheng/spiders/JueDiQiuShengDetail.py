@@ -12,9 +12,11 @@ from JueDiQiuSheng.items import JDQSDetailItem
 class JueDiQiuShengDetail(Spider):
     name = "JueDiQiuShengDetail"
     start_urls = [
-        "http://www.gamersky.com/handbook/201705/906915.shtml",
+        # 图文网页
+        # "http://www.gamersky.com/handbook/201705/906915.shtml",
         # "http://www.gamersky.com/handbook/201708/945256.shtml",
-        # "http://www.gamersky.com/handbook/201704/893376.shtml",
+        # 分页
+        "http://www.gamersky.com/handbook/201704/893376.shtml",
     ]
 
     def __init__(self):
@@ -98,7 +100,7 @@ class JueDiQiuShengDetail(Spider):
                 content += text
 
             print("正文内容是：\r\n" + content)
-            yield insertData2DB(jid, articleName, articleAuthor, subString)
+            yield insertData2DB(jid, articleName, articleAuthor, content)
 
             Constant.global_detail_list.clear()
 

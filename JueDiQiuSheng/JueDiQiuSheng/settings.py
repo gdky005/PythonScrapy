@@ -14,8 +14,8 @@ BOT_NAME = 'JueDiQiuSheng'
 SPIDER_MODULES = ['JueDiQiuSheng.spiders']
 NEWSPIDER_MODULE = 'JueDiQiuSheng.spiders'
 ITEM_PIPELINES = {
-    # 'JueDiQiuSheng.pipelines.JuediqiushengPipeline': 800,
-    'JueDiQiuSheng.pipelines.JDQSDetailPipeline': 800,
+    'JueDiQiuSheng.pipelines.JuediqiushengPipeline': 800,
+    'JueDiQiuSheng.pipelines.JDQSDetailPipeline': 300,
 }
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
