@@ -25,6 +25,12 @@ class JueDiQiuShengDetail(Spider):
         # print(content)
         selector = Selector(text=content)
 
+        jid = getJid(response.url)
+
+        print("当前文件中的 id 是：" + jid)
+
+
+
         pages = []
         subString = ""
 
@@ -58,6 +64,7 @@ class JueDiQiuShengDetail(Spider):
                 yield scrapy.Request(url=pages[i], meta={
                     "page": i + 1,
                     "pageCount": length,
+                    "jid": jid,
                 }, callback=self.parserData)
 
     @staticmethod
@@ -67,6 +74,7 @@ class JueDiQiuShengDetail(Spider):
 
         page = response.meta["page"]
         pageCount = response.meta["pageCount"]
+        jid = response.meta["jid"]
 
         subString = ""
         selector = Selector(text=content)
@@ -113,3 +121,18 @@ def getContent(elements):
         subString += text
         subString += "\n"
     return subString
+
+
+# 根据 Url 获取 Jid
+def getJid(url):
+    try:
+        start = url.rindex("/")
+        end = url.rindex(".")
+        newUrl = url[(start + 1):end]
+        if newUrl.__contains__("-"):
+            newUrl = newUrl[0:newUrl.rindex("-")]
+    except:
+        newUrl = url
+        pass
+
+    return newUrl
