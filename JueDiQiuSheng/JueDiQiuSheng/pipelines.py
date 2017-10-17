@@ -14,7 +14,7 @@ class JuediqiushengPipeline(object):
     user = Globle.Constant.user
     password = Globle.Constant.password
     database_name = Globle.Constant.database_name
-    table_name = Globle.Constant.table_name
+    table_name = "JueDiQiuSheng_jdqscategory"
     charset = Globle.Constant.charset
 
     def __init__(self):
@@ -54,7 +54,7 @@ class JDQSDetailPipeline(object):
     user = Globle.Constant.user
     password = Globle.Constant.password
     database_name = Globle.Constant.database_name
-    table_name = Globle.Constant.table_name
+    table_name = "JueDiQiuSheng_jdqsdetail"
     charset = Globle.Constant.charset
 
     def __init__(self):
@@ -62,23 +62,26 @@ class JDQSDetailPipeline(object):
                                     db=self.database_name, charset=self.charset)
 
     def process_item(self, item, spider):
-        # 给库中插入数据
-        cur = self.conn.cursor()
+        try:
+            # 给库中插入数据
+            cur = self.conn.cursor()
 
-        # id = item['id']
-        jid = item['jid']
-        artifactName = item['artifactName']
-        artifactAuthor = item['artifactAuthor']
-        content = item['content']
+            # id = item['id']
+            jid = item['jid']
+            artifactName = item['artifactName']
+            artifactAuthor = item['artifactAuthor']
+            content = item['content']
 
-        sql = "INSERT INTO " + self.table_name + " (jid, artifactName, artifactAuthor, content)" \
-                                                 " VALUES (%s, %s, %s, %s)"
-        cur.execute(sql, (jid, artifactName, artifactAuthor, content))
+            sql = "INSERT INTO " + self.table_name + " (jid, artifactName, artifactAuthor, content)" \
+                                                     " VALUES (%s, %s, %s, %s)"
+            cur.execute(sql, (jid, artifactName, artifactAuthor, content))
 
-        cur.close()
-        self.conn.commit()
+            cur.close()
+            self.conn.commit()
 
-        return item
+            return item
+        except:
+            pass
 
     def close_spider(self):
         self.conn.close()
