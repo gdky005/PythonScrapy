@@ -53,7 +53,7 @@ def insertData2DB(name, url):
 
     from JueDiQiuSheng.items import JDQSDCategory
     item = JDQSDCategory()
-    item['categoryId'] = jid
+    item['id'] = jid
     item['categoryName'] = name
     item['categoryUrl'] = url
 
