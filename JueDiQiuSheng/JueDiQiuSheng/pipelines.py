@@ -34,14 +34,18 @@ class JuediqiushengPipeline(object):
             categoryId = item['categoryId']
             categoryName = item['categoryName']
 
-            sql = "INSERT INTO " + self.table_name + " (jid, name, url, picUrl, categoryId, categoryName)" \
-                                                     " VALUES (%s, %s, %s, %s, %s, %s)"
+            sql = "INSERT INTO " + self.table_name + " (" \
+                                                     "jid, name, url, picUrl, categoryId, categoryName" \
+                                                     ") VALUES (" \
+                                                     "%s, %s, %s, %s, %s, %s" \
+                                                     ")"
             cur.execute(sql, (jid, name, url, picUrl, categoryId, categoryName))
             cur.close()
             self.conn.commit()
 
             return item
         except:
+            print("JuediqiushengPipeline process_item 出现异常")
             pass
 
     def close_spider(self):
@@ -72,15 +76,19 @@ class JDQSDetailPipeline(object):
             artifactAuthor = item['artifactAuthor']
             content = item['content']
 
-            sql = "INSERT INTO " + self.table_name + " (jid, artifactName, artifactAuthor, content)" \
-                                                     " VALUES (%s, %s, %s, %s)"
+            sql = "INSERT INTO " + self.table_name + " (" \
+                                                     "jid, artifactName, artifactAuthor, content" \
+                                                     ") VALUES (" \
+                                                     "%s, %s, %s, %s" \
+                                                     ")"
             cur.execute(sql, (jid, artifactName, artifactAuthor, content))
 
             cur.close()
             self.conn.commit()
 
             return item
-        except:
+        except Exception:
+            print("JDQSDetailPipeline process_item 出现异常")
             pass
 
     def close_spider(self):
