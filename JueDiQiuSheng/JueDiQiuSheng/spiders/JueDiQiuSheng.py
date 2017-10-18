@@ -3,13 +3,13 @@ from scrapy import Selector
 from scrapy.spiders import Spider
 from selenium import webdriver
 
-from JueDiQiuSheng.items import JuediqiushengItem
+from JueDiQiuSheng.items import JDQSItem
 
 
 class JueDiQiuSheng(Spider):
     name = "JueDiQiuSheng"
     start_urls = [
-        "http://www.gamersky.com/z/playbattlegrounds/",
+        "http://www.gamersky.com/z/playbattlegrounds/862094_34425/",
     ]
 
     def __init__(self):
@@ -21,36 +21,61 @@ class JueDiQiuSheng(Spider):
 
         selector = Selector(text=content)
 
-        # 获取大分类
-        midLSelector = selector.css("div.Mid_L")[0]
+        categoryId = getCategoryId(response.url)
+        itemList = selector.css("ul.titlist").css("li.li1")
+        for item in itemList:
+            artifactUrl = ""
+            picUrl = ""
 
-        midLtit = midLSelector.css("div.MidLtit")
-        bigTitle = midLtit.css("div.tit.t1::text")[0].extract()
-        print("大标题是：" + bigTitle)
+            artifactName = item.css("a::attr(title)")[0].extract()
+            artifactDate = item.css("div.time::text")[0].extract()
+            artifactSourceUrl = item.css("a::attr(href)")[0].extract()
 
-        # // 攻略合集
-        g_l_h_j = midLSelector.css("div.MidLcon.GLHJ")
-        g_l_h_j2 = g_l_h_j.css("div.GLHJ-2")
+            print("当前的分类 id 是：" + categoryId)
+            print("当前的分类 name 是：" + artifactName)
+            print("当前的分类 href 是：" + artifactDate)
+            print("当前的分类 date 是：" + artifactSourceUrl)
 
-        infoList = []
+            yield insertData2DB(artifactName, artifactDate, artifactSourceUrl, artifactUrl, picUrl, categoryId)
 
-        infoList += rmbb(g_l_h_j)
-        infoList += getOtherKinds(g_l_h_j2)
 
-        for e in infoList:
-            name = e["name"]
-            url = e["url"]
-            picUrl = e["picUrl"]
-            category_id = e["category_id"]
-            category_name = e["category_name"]
+            # 获取时间
+            # selector.css("ul.titlist").css("li.li1").css("div.time::text")[0].extract()
+            # 获取链接
+            # selector.css("ul.titlist").css("li.li1")[0].css("a::attr(href)")[0].extract()
+            # 获取名称
+            # selector.css("ul.titlist").css("li.li1")[0].css("a::attr(title)")[0].extract()
 
-            print(
-                "\tname: " + name +
-                "\tcategory_id: " + category_id +
-                "\tcategory_name: " + category_name
-            )
+            # # 获取大分类
+            # midLSelector = selector.css("div.Mid_L")[0]
+            #
+            # midLtit = midLSelector.css("div.MidLtit")
+            # bigTitle = midLtit.css("div.tit.t1::text")[0].extract()
+            # print("大标题是：" + bigTitle)
 
-            yield insertData2DB(name, url, picUrl, category_id, category_name)
+            # # // 攻略合集
+            # g_l_h_j = midLSelector.css("div.MidLcon.GLHJ")
+            # g_l_h_j2 = g_l_h_j.css("div.GLHJ-2")
+            #
+            # infoList = []
+            #
+            # infoList += rmbb(g_l_h_j)
+            # infoList += getOtherKinds(g_l_h_j2)
+            #
+            # for e in infoList:
+            #     name = e["name"]
+            #     url = e["url"]
+            #     picUrl = e["picUrl"]
+            #     category_id = e["category_id"]
+            #     category_name = e["category_name"]
+            #
+            #     print(
+            #         "\tname: " + name +
+            #         "\tcategory_id: " + category_id +
+            #         "\tcategory_name: " + category_name
+            #     )
+            #
+            #     yield insertData2DB(name, url, picUrl, category_id, category_name)
 
 
 # 入门必备
@@ -174,15 +199,16 @@ def getCategoryId(url):
 
 
 # 插入数据到数据库中
-def insertData2DB(name, url, pic_url, category_id, category_name):
-    jid = getJid(url)
+def insertData2DB(artifactName, artifactDate, artifactSourceUrl, artifactUrl, picUrl, categoryId):
+    id = getJid(artifactSourceUrl)
 
-    item = JuediqiushengItem()
-    item['jid'] = jid
-    item['name'] = name
-    item['url'] = url
-    item['picUrl'] = pic_url
-    item['categoryId'] = category_id
-    item['categoryName'] = category_name
+    item = JDQSItem()
+    item['id'] = id
+    item['artifactName'] = artifactName
+    item['artifactDate'] = artifactDate
+    item['artifactSourceUrl'] = artifactSourceUrl
+    item['artifactUrl'] = artifactUrl
+    item['picUrl'] = picUrl
+    item['categoryId'] = categoryId
 
     return item
