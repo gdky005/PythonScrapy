@@ -5,6 +5,8 @@ from selenium import webdriver
 
 from JueDiQiuSheng.items import JDQSItem
 
+from JueDiQiuSheng import Utils
+
 
 class JueDiQiuSheng(Spider):
     name = "JueDiQiuSheng"
@@ -21,7 +23,7 @@ class JueDiQiuSheng(Spider):
 
         selector = Selector(text=content)
 
-        categoryId = getCategoryId(response.url)
+        categoryId = Utils.getCategoryId(response.url)
         itemList = selector.css("ul.titlist").css("li.li1")
         for item in itemList:
             artifactUrl = ""
@@ -103,7 +105,7 @@ def rmbb(element):
 
 # 添加分类属性
 def addCategoryData(infoList, name, category_url):
-    category_id = getCategoryId(category_url)
+    category_id = Utils.getCategoryId(category_url)
     print("获取 " + name + " category_id：" + category_id)
     for item in infoList:
         item["category_id"] = category_id
@@ -171,36 +173,9 @@ def getElement(element):
     return infoList
 
 
-# 根据 Url 获取 Jid
-def getJid(url):
-    try:
-        start = url.rindex("/")
-        end = url.rindex(".")
-        newUrl = url[(start + 1):end]
-        if newUrl.__contains__("-"):
-            newUrl = newUrl[0:newUrl.rindex("-")]
-    except:
-        newUrl = url
-        pass
-
-    return newUrl
-
-
-# 获取对应的 category_id
-def getCategoryId(url):
-    url = url[0: url.__len__() - 1]
-    print(url)
-
-    start = url.rindex("_")
-    categoryId = url[(start + 1):url.__len__()]
-    if categoryId.__contains__("-"):
-        categoryId = categoryId[0:categoryId.rindex("-")]
-    return categoryId
-
-
 # 插入数据到数据库中
 def insertData2DB(artifactName, artifactDate, artifactSourceUrl, artifactUrl, picUrl, categoryId):
-    id = getJid(artifactSourceUrl)
+    id = Utils.getJid(artifactSourceUrl)
 
     item = JDQSItem()
     item['id'] = id

@@ -7,6 +7,8 @@
 import Constant as Globle
 import pymysql
 
+from JueDiQiuSheng import Utils
+
 
 class JDQSItemPipeline(object):
     host = Globle.Constant.host
@@ -22,7 +24,7 @@ class JDQSItemPipeline(object):
                                     db=self.database_name, charset=self.charset)
 
     def process_item(self, item, spider):
-        # try:
+        try:
             # 给库中插入数据
             cur = self.conn.cursor()
 
@@ -34,20 +36,22 @@ class JDQSItemPipeline(object):
             artifactUrl = item['artifactUrl']
             picUrl = item['picUrl']
             categoryId = item['categoryId']
+            artifactCollection = Utils.getCollectionTime()
 
             sql = "INSERT INTO " + self.table_name + " (" \
-                                                     "id, artifactName, artifactDate, artifactSourceUrl, artifactUrl, picUrl, categoryId_id" \
+                                                     "id, artifactName, artifactDate, artifactSourceUrl, artifactUrl, picUrl, categoryId_id, artifactCollection" \
                                                      ") VALUES (" \
-                                                     "%s, %s, %s, %s, %s, %s, %s" \
+                                                     "%s, %s, %s, %s, %s, %s, %s, %s" \
                                                      ")"
-            cur.execute(sql, (id, artifactName, artifactDate, artifactSourceUrl, artifactUrl, picUrl, categoryId))
+            cur.execute(sql, (id, artifactName, artifactDate, artifactSourceUrl, artifactUrl, picUrl, categoryId, artifactCollection))
             cur.close()
             self.conn.commit()
 
             return item
-        # except:
-        #     print("JuediqiushengPipeline process_item 出现异常")
-        #     pass
+        except Exception as e:
+            print("JDQSContentPipeline process_item 【【【出现异常】】】:" + repr(e))
+
+            pass
 
     def close_spider(self):
         self.conn.close()
