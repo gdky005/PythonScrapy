@@ -1,7 +1,8 @@
+import requests
 import scrapy
 import time
 from parsel import SelectorList
-from scrapy import Selector
+from scrapy import Selector, Request
 from scrapy.spiders import Spider
 from selenium import webdriver
 
@@ -25,6 +26,18 @@ class JueDiQiuSheng(Spider):
 
     def __init__(self):
         super(JueDiQiuSheng, self).__init__()
+
+    def start_requests(self):
+
+        params = {'pageCount': '100'}
+        content = requests.get('http://zkteam.cc/JueDiQiuSheng/json', params)
+        json = content.json()
+        resultJson = json["result"]
+
+        for result in resultJson:
+            newUrl = result["artifactSourceUrl"]
+            print("当前抓取的 Url 是：" + newUrl)
+            yield Request(newUrl)
 
     def parse(self, response):
         content = response.body.decode("utf-8")

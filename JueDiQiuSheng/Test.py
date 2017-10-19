@@ -1,5 +1,7 @@
 import unittest
 
+import requests
+
 from JueDiQiuSheng.JueDiQiuSheng import Utils
 
 
@@ -23,5 +25,15 @@ class TestCase(unittest.TestCase):
 
         for a in l1:
             print(a)
+
+    def test_request(self):
+        content = requests.get('http://zkteam.cc/JueDiQiuSheng/json')
+
+        json = content.json()
+
+        print(json["result"][0]["artifactSourceUrl"])
+
+        print(json)
+
 
 
