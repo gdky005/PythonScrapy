@@ -1,15 +1,26 @@
+import scrapy
+import time
 from parsel import SelectorList
 from scrapy import Selector
 from scrapy.spiders import Spider
 from selenium import webdriver
 
-from JueDiQiuSheng.items import JuediqiushengItem
+import JueDiQiuSheng.Constant_JDQS as Constant
+
+from JueDiQiuSheng.items import JDQSContentItem
+
+from JueDiQiuSheng import Utils
 
 
 class JueDiQiuSheng(Spider):
     name = "JueDiQiuSheng"
     start_urls = [
-        "http://www.gamersky.com/z/playbattlegrounds/",
+        # 图文网页
+        "http://www.gamersky.com/handbook/201710/967630.shtml",
+        # "http://www.gamersky.com/handbook/201705/906915.shtml",
+        # "http://www.gamersky.com/handbook/201708/945256.shtml",
+        # 分页
+        # "http://www.gamersky.com/handbook/201704/893376.shtml",
     ]
 
     def __init__(self):
@@ -18,171 +29,137 @@ class JueDiQiuSheng(Spider):
     def parse(self, response):
         content = response.body.decode("utf-8")
         # print(content)
-
         selector = Selector(text=content)
 
-        # 获取大分类
-        midLSelector = selector.css("div.Mid_L")[0]
+        jid = Utils.getJid(response.url)
 
-        midLtit = midLSelector.css("div.MidLtit")
-        bigTitle = midLtit.css("div.tit.t1::text")[0].extract()
-        print("大标题是：" + bigTitle)
+        print("当前文件中的 id 是：" + jid)
 
-        # // 攻略合集
-        g_l_h_j = midLSelector.css("div.MidLcon.GLHJ")
-        g_l_h_j2 = g_l_h_j.css("div.GLHJ-2")
+        # yield insertData2DB(jid, "我是文章名字", "wq", "我是内容内容")
 
-        infoList = []
+        pages = []
+        subString = ""
 
-        infoList += rmbb(g_l_h_j)
-        infoList += getOtherKinds(g_l_h_j2)
+        initParams()
 
-        for e in infoList:
-            name = e["name"]
-            url = e["url"]
-            picUrl = e["picUrl"]
-            category_id = e["category_id"]
-            category_name = e["category_name"]
+        getPageCount(selector, pages)
 
-            print(
-                "\tname: " + name +
-                "\tcategory_id: " + category_id +
-                "\tcategory_name: " + category_name
-            )
+        word = selector.css("div.Mid2L_tit")
+        articleName = word.css("h1::text")[0].extract()
+        articleAuthor = word.css("div.detail::text")[0].extract().strip()
 
-            yield insertData2DB(name, url, picUrl, category_id, category_name)
+        Constant.jid_id = Utils.getJid(response.url)
+        Constant.artifactName = articleName
+        Constant.artifactAuthor = articleAuthor
+        Constant.artifactSourceUrl = response.url
 
+        print("文章名称：\r\n\t" + articleName)
+        print("文章作者：\r\n\t" + articleAuthor)
+        print("\r\n\t下面是正文：\r\n\t")
 
-# 入门必备
-def rmbb(element):
-    infoList = []
-    GLHJtit = element.css("span.GLHJtit")
+        subString += "<h1><p align=\"center\">" + articleName + "</p></h1>\r\n"
+        subString += "<h5><p align=\"right\">" + articleAuthor + "</p></h5>"
 
-    name = GLHJtit.css("span::text").extract()[0]
-    print("小标题是：" + name)
+        wordDetail = selector.css("div.Mid2L_con")
+        elements = wordDetail.xpath("p")
 
-    imgliklistElements = element.css("ul.imgliklist")
-    elements = imgliklistElements.css("li.img")
-    print("获取 " + name + " 带图片属性：")
-    infoList += getElement(elements)
+        subString += getContent(elements)
 
-    linkElements = imgliklistElements.css("li.lik").css("div.link")
-    print("获取 " + name + " link 属性：")
-    infoList += getElement(linkElements)
+        Constant.global_detail_list.append(subString)
 
-    category_url = GLHJtit.css("a::attr('href')").extract()[0]
-    addCategoryData(infoList, name, category_url)
+        length = len(pages)
 
-    return infoList
+        if length is None or length == 0:
+            print("正文内容是：\r\n" + subString)
+            Constant.artifactContent = subString
+            yield insertData2DB()
+        else:
+            for i in range(length):
+                yield scrapy.Request(url=pages[i], meta={
+                    "page": i + 1,
+                    "pageCount": length,
+                    "jid": jid,
+                    "articleName": articleName,
+                    "articleAuthor": articleAuthor,
+                }, callback=self.parserData)
 
+    @staticmethod
+    def parserData(response):
+        content = response.body.decode("utf-8")
+        # print(content)
 
-# 添加分类属性
-def addCategoryData(infoList, name, category_url):
-    category_id = getCategoryId(category_url)
-    print("获取 " + name + " category_id：" + category_id)
-    for item in infoList:
-        item["category_id"] = category_id
-        item["category_name"] = name
+        page = response.meta["page"]
+        pageCount = response.meta["pageCount"]
 
+        subString = ""
+        selector = Selector(text=content)
 
-# 获取 攻略合集 里面 除过 入门必备 的其他分类
-def getOtherKinds(element):
-    infoList = []
+        elements = selector.css("div.Mid2L_con").xpath("p")
+        subString += getContent(elements)
 
-    for e in element:
-        sTitle = e.css("span.GLHJtit")
-        name = sTitle.xpath("string(.)").extract()[0]
-        print("小标题：\n\t" + name)
+        Constant.global_detail_list.append(subString)
 
-        imgliklistElements = e.css("ul.liklist").css("li.line1")
-        print("获取 " + name + " 带图片属性：")
-        elementList = getElement(imgliklistElements)
+        if pageCount == page:
+            globalList = Constant.global_detail_list
 
-        try:
-            category_url = sTitle.css("a::attr('href')").extract()[0]
-            addCategoryData(elementList, name, category_url)
-        except:
-            pass
+            content = ""
+            for text in globalList:
+                content += text
 
-        infoList += elementList
+            Constant.artifactContent = content
+            print("正文内容是：\r\n" + content)
+            yield insertData2DB()
 
-    return infoList
+            Constant.global_detail_list.clear()
 
 
-# 获取相关属性
-def getElement(element):
-    infoList = []
-
-    for e in element:
-        name = ""
-        url = ""
-        picUrl = ""
-
-        try:
-            name = e.xpath("string(.)").extract()[0].strip()
-        except:
-            pass
-
-        try:
-            url = e.css("a::attr(href)").extract()[0]
-        except:
-            pass
-
-        try:
-            picUrl = e.css("img::attr(src)").extract()[0]
-        except:
-            pass
-
-        print("\t属性是：\n\t\t" +
-              "name:" + name + "\r\n\t\t" +
-              "url:" + url + "\r\n\t\t" +
-              "picUrl:" + picUrl + "\r\n\t\t")
-
-        print("\r")
-
-        d = {'name': name, 'url': url, 'picUrl': picUrl}
-        infoList.append(d)
-
-    return infoList
+def initParams():
+    Constant.jid_id = ""
+    Constant.artifactName = ""
+    Constant.artifactAuthor = ""
+    Constant.artifactContent = ""
+    Constant.artifactSourceUrl = ""
+    Constant.artifactUrl = ""
+    Constant.global_detail_list.clear()
 
 
-# 根据 Url 获取 Jid
-def getJid(url):
-    try:
-        start = url.rindex("/")
-        end = url.rindex(".")
-        newUrl = url[(start + 1):end]
-        if newUrl.__contains__("-"):
-            newUrl = newUrl[0:newUrl.rindex("-")]
-    except:
-        newUrl = url
-        pass
+# 获取总页数
+def getPageCount(selector, pages):
+    pageElements = selector.css("div.page_css").xpath("a")
+    for i in range(len(pageElements)):
+        if i == len(pageElements) - 1:
+            continue
 
-    return newUrl
+        page = pageElements[i].css("a::attr(href)")[0].extract()
+        pages.append(page)
 
 
-# 获取对应的 category_id
-def getCategoryId(url):
-    url = url[0: url.__len__() - 1]
-    print(url)
+# 获取文章中的主要内容
+def getContent(elements):
+    subString = ""
+    for i in range(len(elements)):
 
-    start = url.rindex("_")
-    categoryId = url[(start + 1):url.__len__()]
-    if categoryId.__contains__("-"):
-        categoryId = categoryId[0:categoryId.rindex("-")]
-    return categoryId
+        if i >= (len(elements) - 2):
+            break
+
+        text = elements[i].extract()
+        if "data-src" in text:
+            text = text.replace("src=\"http://image.gamersky.com/webimg13/zhuanti/common/blank.png\" data-", "")
+        subString += text
+        subString += "\n"
+    return subString
 
 
 # 插入数据到数据库中
-def insertData2DB(name, url, pic_url, category_id, category_name):
-    jid = getJid(url)
+def insertData2DB():
+    item = JDQSContentItem()
 
-    item = JuediqiushengItem()
-    item['jid'] = jid
-    item['name'] = name
-    item['url'] = url
-    item['picUrl'] = pic_url
-    item['categoryId'] = category_id
-    item['categoryName'] = category_name
+    item['artifactName'] = Constant.artifactName
+    item['artifactAuthor'] = Constant.artifactAuthor
+    item['artifactContent'] = Constant.artifactContent
+    item['jid_id'] = Constant.jid_id
+    item['artifactSourceUrl'] = Constant.artifactSourceUrl
+    item['artifactUrl'] = Constant.artifactUrl
+    item['artifactCollection'] = Utils.getCollectionTime()
 
     return item

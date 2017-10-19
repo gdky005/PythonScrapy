@@ -9,25 +9,16 @@ import scrapy
 from scrapy import Field
 
 
-class JuediqiushengItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
+class JDQSContentItem(scrapy.Item):
     id = Field()
-    jid = Field()
-    name = Field()
-    url = Field()
-    picUrl = Field()
-    categoryId = Field()
-    categoryName = Field()
-    pass
-
-
-class JDQSDetailItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    id = Field()
-    jid = Field()
     artifactName = Field()
     artifactAuthor = Field()
-    content = Field()
+    artifactContent = Field()
+    jid_id = Field()
+    artifactSourceUrl = Field()
+    artifactUrl = Field()
+    artifactCollection = Field()
     pass
+
+
+
