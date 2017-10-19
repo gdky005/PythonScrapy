@@ -167,12 +167,17 @@ def getContent(elements):
 def insertData2DB():
     item = JDQSContentItem()
 
+    jid = Constant.jid_id
+
+    url = '<p><a href="http://www.zkteam.cc/JueDiQiuSheng/detail.html?jid=' + jid +\
+          '">http://www.zkteam.cc/JueDiQiuSheng/detail.html?jid=' + jid + "</a></p>"
+
     item['artifactName'] = Constant.artifactName
     item['artifactAuthor'] = Constant.artifactAuthor
     item['artifactContent'] = Constant.artifactContent
-    item['jid_id'] = Constant.jid_id
+    item['jid_id'] = jid
     item['artifactSourceUrl'] = Constant.artifactSourceUrl
-    item['artifactUrl'] = Constant.artifactUrl
-    item['artifactCollection'] = "http://www.zkteam.cc/JueDiQiuSheng/detail.html?jid=" + Constant.jid_id
+    item['artifactUrl'] = url
+    item['artifactCollection'] = Utils.getCollectionTime()
 
     return item
