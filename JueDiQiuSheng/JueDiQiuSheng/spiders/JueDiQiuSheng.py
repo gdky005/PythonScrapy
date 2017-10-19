@@ -173,6 +173,6 @@ def insertData2DB():
     item['jid_id'] = Constant.jid_id
     item['artifactSourceUrl'] = Constant.artifactSourceUrl
     item['artifactUrl'] = Constant.artifactUrl
-    item['artifactCollection'] = Utils.getCollectionTime()
+    item['artifactCollection'] = "http://www.zkteam.cc/JueDiQiuSheng/detail.html?jid=" + Constant.jid_id
 
     return item
