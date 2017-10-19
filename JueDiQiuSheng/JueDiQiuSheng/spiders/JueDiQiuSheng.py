@@ -26,7 +26,6 @@ class JueDiQiuSheng(Spider):
         categoryId = Utils.getCategoryId(response.url)
         itemList = selector.css("ul.titlist").css("li.li1")
         for item in itemList:
-            artifactUrl = ""
             picUrl = ""
 
             artifactName = item.css("a::attr(title)")[0].extract()
@@ -38,7 +37,7 @@ class JueDiQiuSheng(Spider):
             print("当前的分类 href 是：" + artifactDate)
             print("当前的分类 date 是：" + artifactSourceUrl)
 
-            yield insertData2DB(artifactName, artifactDate, artifactSourceUrl, artifactUrl, picUrl, categoryId)
+            yield insertData2DB(artifactName, artifactDate, artifactSourceUrl, picUrl, categoryId)
 
 
             # 获取时间
@@ -174,15 +173,18 @@ def getElement(element):
 
 
 # 插入数据到数据库中
-def insertData2DB(artifactName, artifactDate, artifactSourceUrl, artifactUrl, picUrl, categoryId):
-    id = Utils.getJid(artifactSourceUrl)
+def insertData2DB(artifactName, artifactDate, artifactSourceUrl, picUrl, categoryId):
+    jid = Utils.getJid(artifactSourceUrl)
+
+    url = '<p><a href="http://www.zkteam.cc/JueDiQiuSheng/detail.html?jid=' + jid + \
+          '">http://www.zkteam.cc/JueDiQiuSheng/detail.html?jid=' + jid + "</a></p>"
 
     item = JDQSItem()
-    item['id'] = id
+    item['id'] = jid
     item['artifactName'] = artifactName
     item['artifactDate'] = artifactDate
     item['artifactSourceUrl'] = artifactSourceUrl
-    item['artifactUrl'] = artifactUrl
+    item['artifactUrl'] = url
     item['picUrl'] = picUrl
     item['categoryId'] = categoryId
 
