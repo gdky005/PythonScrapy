@@ -8,7 +8,7 @@ import Constant as Globle
 import pymysql
 
 
-class JDQSCategoryPipeline(object):
+class JDQSPicCategoryPipeline(object):
     host = Globle.Constant.host
     port = Globle.Constant.port
     user = Globle.Constant.user
@@ -26,23 +26,25 @@ class JDQSCategoryPipeline(object):
             # 给库中插入数据
             cur = self.conn.cursor()
 
-            id = item['id']
-            categoryName = item['categoryName']
-            categoryUrl = item['categoryUrl']
+            picCategoryId = item['id']
+            picCategoryName = item['picCategoryName']
+            picCategoryUrl = item['picCategoryUrl']
+            picCategoryCollection = item['picCategoryCollection']
 
             sql = "INSERT INTO " + self.table_name + " (" \
-                                                     "id, categoryName, categoryUrl" \
+                                                     "id, picCategoryName, picCategoryUrl, picCategoryCollection" \
                                                      ") VALUES (" \
-                                                     "%s, %s, %s" \
+                                                     "%s, %s, %s, %s" \
                                                      ")"
-            cur.execute(sql, (id, categoryName, categoryUrl))
+            cur.execute(sql, (picCategoryId, picCategoryName, picCategoryUrl, picCategoryCollection))
 
             cur.close()
             self.conn.commit()
 
             return item
-        except Exception:
-            print("JDQSCategoryPipeline process_item 出现异常")
+        except Exception as e:
+            print("JDQSContentPipeline process_item 【【【出现异常】】】:" + repr(e))
+
             pass
 
     def close_spider(self):

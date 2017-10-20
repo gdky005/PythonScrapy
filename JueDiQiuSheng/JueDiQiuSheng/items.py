@@ -9,9 +9,9 @@ import scrapy
 from scrapy import Field
 
 
-class JDQSDCategory(scrapy.Item):
+class JDQSDPicCategoryItem(scrapy.Item):
     id = Field()
-    categoryId = Field()
-    categoryName = Field()
-    categoryUrl = Field()
+    picCategoryName = Field()
+    picCategoryUrl = Field()
+    picCategoryCollection = Field()
     pass
