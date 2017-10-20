@@ -1,29 +1,44 @@
+import requests
+import time
 from parsel import SelectorList
-from scrapy import Selector
+from scrapy import Selector, Request
 from scrapy.spiders import Spider
 from selenium import webdriver
 
 from JueDiQiuSheng.items import JDQSItem
 
 from JueDiQiuSheng import Utils
+from JueDiQiuSheng import Constant_JDQS
 
 
 class JueDiQiuSheng(Spider):
     name = "JueDiQiuSheng"
     start_urls = [
-        "http://www.gamersky.com/z/playbattlegrounds/862094_34425/",
+        "http://www.gamersky.com/z/playbattlegrounds/news/",
     ]
 
     def __init__(self):
         super(JueDiQiuSheng, self).__init__()
+        self.driver = webdriver.Chrome("/Users/WangQing/opt/chrome/chromedriver")
+        self.driver.maximize_window()
 
     def parse(self, response):
-        content = response.body.decode("utf-8")
+        # content = response.body.decode("utf-8")
         # print(content)
 
-        selector = Selector(text=content)
+        # 表示资讯
+        categoryId = "10000"
 
-        categoryId = Utils.getCategoryId(response.url)
+        currentUrl = response.url
+        content = self.driverScroll(currentUrl)
+
+        self.insertData(content, categoryId)
+
+        for item in Constant_JDQS.global_item_list:
+            yield item
+
+    def insertData(self, content, categoryId):
+        selector = Selector(text=content)
         itemList = selector.css("ul.titlist").css("li.li1")
         for item in itemList:
             picUrl = ""
@@ -32,51 +47,42 @@ class JueDiQiuSheng(Spider):
             artifactDate = item.css("div.time::text")[0].extract()
             artifactSourceUrl = item.css("a::attr(href)")[0].extract()
 
-            print("当前的分类 id 是：" + categoryId)
+            # print("当前的分类 id 是：" + categoryId)
             print("当前的分类 name 是：" + artifactName)
             print("当前的分类 href 是：" + artifactDate)
             print("当前的分类 date 是：" + artifactSourceUrl)
 
-            yield insertData2DB(artifactName, artifactDate, artifactSourceUrl, picUrl, categoryId)
+            data = insertData2DB(artifactName, artifactDate, artifactSourceUrl, picUrl, categoryId)
+            Constant_JDQS.global_item_list.append(data)
 
+        nextPage = selector.css("a.p1.nexe::text")[0].extract()
 
-            # 获取时间
-            # selector.css("ul.titlist").css("li.li1").css("div.time::text")[0].extract()
-            # 获取链接
-            # selector.css("ul.titlist").css("li.li1")[0].css("a::attr(href)")[0].extract()
-            # 获取名称
-            # selector.css("ul.titlist").css("li.li1")[0].css("a::attr(title)")[0].extract()
+        nextElement = self.driver.find_element_by_css_selector("a.p1.nexe")
 
-            # # 获取大分类
-            # midLSelector = selector.css("div.Mid_L")[0]
-            #
-            # midLtit = midLSelector.css("div.MidLtit")
-            # bigTitle = midLtit.css("div.tit.t1::text")[0].extract()
-            # print("大标题是：" + bigTitle)
+        if nextPage == "下一页" and nextElement.is_displayed():
+            # 点击下一页
+            nextElement.click()
 
-            # # // 攻略合集
-            # g_l_h_j = midLSelector.css("div.MidLcon.GLHJ")
-            # g_l_h_j2 = g_l_h_j.css("div.GLHJ-2")
-            #
-            # infoList = []
-            #
-            # infoList += rmbb(g_l_h_j)
-            # infoList += getOtherKinds(g_l_h_j2)
-            #
-            # for e in infoList:
-            #     name = e["name"]
-            #     url = e["url"]
-            #     picUrl = e["picUrl"]
-            #     category_id = e["category_id"]
-            #     category_name = e["category_name"]
-            #
-            #     print(
-            #         "\tname: " + name +
-            #         "\tcategory_id: " + category_id +
-            #         "\tcategory_name: " + category_name
-            #     )
-            #
-            #     yield insertData2DB(name, url, picUrl, category_id, category_name)
+            time.sleep(2)
+            content = self.driver.page_source
+
+            self.insertData(content, categoryId)
+        else:
+            self.driver.quit()
+
+    # 模拟浏览器滚动
+    def driverScroll(self, currentUrl):
+        self.driver.get(currentUrl)
+        try:
+            i = 0
+            while i < 10:
+                self.driver.execute_script("window.scrollBy(0, 200)")
+                time.sleep(0.3)
+                i += 1
+        except Exception as e:
+            pass
+        content = self.driver.page_source
+        return content
 
 
 # 入门必备
