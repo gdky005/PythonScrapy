@@ -1,40 +1,49 @@
-url1 = "http://www.gamersky.com/handbook/201706/919363-67.shtml"
+import unittest
+
+import requests
+
+from JueDiQiuSheng.JueDiQiuSheng import Utils
 
 
-def getJid(url):
-    start = url.rindex("/")
-    end = url.rindex(".")
-    newUrl = url[(start + 1):end]
-    if newUrl.__contains__("-"):
-        newUrl = newUrl[0:newUrl.rindex("-")]
-    return newUrl
+class TestCase(unittest.TestCase):
+    def test_getNowTime(self):
+        print("test_getNowTime: " + Utils.getCollectionTime())
+
+    def test_getCategoryId(self):
+        categoryUrl = "http://www.gamersky.com/z/playbattlegrounds/862094_64754/"
+        print("test_getCategoryId: " + Utils.getCategoryId(categoryUrl))
+
+    def test_getJid(self):
+        url = "http://www.gamersky.com/handbook/201706/919363-67.shtml"
+        print("test_getJid: " + Utils.getJid(url))
+
+    def test_addList(self):
+        l1 = [1, 2, 3]
+        l2 = [4, 5, 6]
+
+        l1 += l2
+
+        for a in l1:
+            print(a)
+
+    def test_request(self):
+        content = requests.get('http://zkteam.cc/JueDiQiuSheng/json')
+
+        json = content.json()
+
+        print(json["result"][0]["artifactSourceUrl"])
+
+        print(json)
+
+    def test_SubStr(self):
+        url = '201710161706307881.jpg'
+        print(url)
+        print(url.replace(".jpg", "_tiny.jpg"))
+        print(url.replace(".jpg", "_small.jpg"))
+
+    def test_getJid2(self):
+        url = 'http://pic.gamersky.com/content/201705/901183.shtml'
+        print(Utils.getJid(url))
 
 
-def getCategoryId(url):
-    url = url[0: url.__len__() - 1]
-    print(url)
 
-    start = url.rindex("_")
-    categoryId = url[(start + 1):url.__len__()]
-    if categoryId.__contains__("-"):
-        categoryId = categoryId[0:categoryId.rindex("-")]
-    return categoryId
-
-
-#
-# # print("Jid=" + getJid(url1))
-#
-# l1 = [1,2,3]
-# l2 = [4,5,6]
-#
-# l1 += l2
-#
-#
-#
-# for a in l1:
-#     print(a)
-
-
-categoryUrl = "http://www.gamersky.com/z/playbattlegrounds/862094_64754/"
-
-print(getCategoryId(categoryUrl))

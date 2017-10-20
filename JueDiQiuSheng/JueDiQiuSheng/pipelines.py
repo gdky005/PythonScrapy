@@ -8,7 +8,7 @@ import Constant as Globle
 import pymysql
 
 
-class JDQSPicCategoryPipeline(object):
+class JDQSPicUrlPipeline(object):
     host = Globle.Constant.host
     port = Globle.Constant.port
     user = Globle.Constant.user
@@ -26,17 +26,21 @@ class JDQSPicCategoryPipeline(object):
             # 给库中插入数据
             cur = self.conn.cursor()
 
-            picCategoryId = item['id']
-            picCategoryName = item['picCategoryName']
-            picCategoryUrl = item['picCategoryUrl']
-            picCategoryCollection = item['picCategoryCollection']
+            picId = item['picId']
+            picUrl = item['picUrl']
+            picTinyUrl = item['picTinyUrl']
+            picSmallUrl = item['picSmallUrl']
+            picZKUrl = item['picZKUrl']
+            picName = item['picName']
+            picCollection = item['picCollection']
+            picCategoryId_id = item['picCategoryId_id']
 
             sql = "INSERT INTO " + self.table_name + " (" \
-                                                     "id, picCategoryName, picCategoryUrl, picCategoryCollection" \
+                                                     "picId, picUrl, picTinyUrl, picSmallUrl, picZKUrl, picName, picCollection, picCategoryId_id" \
                                                      ") VALUES (" \
-                                                     "%s, %s, %s, %s" \
+                                                     "%s, %s, %s, %s, %s, %s, %s, %s" \
                                                      ")"
-            cur.execute(sql, (picCategoryId, picCategoryName, picCategoryUrl, picCategoryCollection))
+            cur.execute(sql, (picId, picUrl, picTinyUrl, picSmallUrl, picZKUrl, picName, picCollection, picCategoryId_id))
 
             cur.close()
             self.conn.commit()
