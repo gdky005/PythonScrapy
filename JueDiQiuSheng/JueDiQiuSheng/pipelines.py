@@ -10,7 +10,7 @@ import pymysql
 from JueDiQiuSheng import Utils
 
 
-class JDQSTJItemPipeline(object):
+class JDQSItemPipeline(object):
     host = Globle.Constant.host
     port = Globle.Constant.port
     user = Globle.Constant.user
@@ -29,21 +29,21 @@ class JDQSTJItemPipeline(object):
             cur = self.conn.cursor()
 
             # id = item['id']
-            id = item['id']
-            tjName = item['tjName']
-            tjDate = item['tjDate']
-            tjSourceUrl = item['tjSourceUrl']
-            tjUrl = item['tjUrl']
-            tjPicUrl = item['tjPicUrl']
+            jid = item['jid']
+            artifactName = item['artifactName']
+            artifactDate = item['artifactDate']
+            artifactSourceUrl = item['artifactSourceUrl']
+            artifactUrl = item['artifactUrl']
+            picUrl = item['picUrl']
             categoryId = item['categoryId']
-            tjCollection = Utils.getCollectionTime()
+            artifactCollection = Utils.getCollectionTime()
 
             sql = "INSERT INTO " + self.table_name + " (" \
-                                                     "id, tjName, tjDate, tjSourceUrl, tjUrl, tjPicUrl, tjCategoryId_id, tjCollection" \
+                                                     "jid, artifactName, artifactDate, artifactSourceUrl, artifactUrl, picUrl, categoryId_id, artifactCollection" \
                                                      ") VALUES (" \
                                                      "%s, %s, %s, %s, %s, %s, %s, %s" \
                                                      ")"
-            cur.execute(sql, (id, tjName, tjDate, tjSourceUrl, tjUrl, tjPicUrl, categoryId, tjCollection))
+            cur.execute(sql, (jid, artifactName, artifactDate, artifactSourceUrl, artifactUrl, picUrl, categoryId, artifactCollection))
             cur.close()
             self.conn.commit()
 
