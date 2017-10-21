@@ -5,7 +5,7 @@ from JueDiQiuSheng import Utils
 
 
 class JDQSPicCategory(Spider):
-    name = "JDQSPicCategory"
+    name = "JueDiQiuSheng"
     start_urls = [
         # "http://www.gamersky.com/z/playbattlegrounds/",
         # 图库总页面
