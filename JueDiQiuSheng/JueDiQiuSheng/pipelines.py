@@ -8,7 +8,7 @@ import Constant as Globle
 import pymysql
 
 
-class JDQSCategoryPipeline(object):
+class JDQSTJCategoryPipeline(object):
     host = Globle.Constant.host
     port = Globle.Constant.port
     user = Globle.Constant.user
@@ -27,16 +27,16 @@ class JDQSCategoryPipeline(object):
             cur = self.conn.cursor()
 
             id = item['id']
-            categoryName = item['categoryName']
-            categoryUrl = item['categoryUrl']
-            artifactCollection = item['artifactCollection']
+            tjName = item['tjName']
+            tjUrl = item['tjUrl']
+            tjCollection = item['tjCollection']
 
             sql = "INSERT INTO " + self.table_name + " (" \
-                                                     "id, categoryName, categoryUrl, artifactCollection" \
+                                                     "id, tjName, tjUrl, tjCollection" \
                                                      ") VALUES (" \
                                                      "%s, %s, %s, %s" \
                                                      ")"
-            cur.execute(sql, (id, categoryName, categoryUrl, artifactCollection))
+            cur.execute(sql, (id, tjName, tjUrl, tjCollection))
 
             cur.close()
             self.conn.commit()

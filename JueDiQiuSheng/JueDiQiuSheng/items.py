@@ -11,8 +11,8 @@ from scrapy import Field
 
 class JDQSDCategory(scrapy.Item):
     id = Field()
-    categoryId = Field()
-    categoryName = Field()
-    categoryUrl = Field()
-    artifactCollection = Field()
+    tjId = Field()
+    tjName = Field()
+    tjUrl = Field()
+    tjCollection = Field()
     pass
