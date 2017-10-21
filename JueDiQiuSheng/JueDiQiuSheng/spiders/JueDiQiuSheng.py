@@ -29,8 +29,8 @@ class JueDiQiuSheng(Spider):
 
     def start_requests(self):
 
-        params = {'pageCount': '100'}
-        content = requests.get('http://zkteam.cc/JueDiQiuSheng/json', params)
+        params = {'pageCount': '2000'}
+        content = requests.get('http://zkteam.cc/JueDiQiuSheng/itemJson', params)
         json = content.json()
         resultJson = json["result"]
 
@@ -167,7 +167,7 @@ def getContent(elements):
 def insertData2DB():
     item = JDQSContentItem()
 
-    jid = Constant.jid_id
+    jid = Utils.getJid(Constant.artifactSourceUrl)
 
     url = '<p><a href="http://www.zkteam.cc/JueDiQiuSheng/detail.html?jid=' + jid +\
           '">http://www.zkteam.cc/JueDiQiuSheng/detail.html?jid=' + jid + "</a></p>"
@@ -175,7 +175,7 @@ def insertData2DB():
     item['artifactName'] = Constant.artifactName
     item['artifactAuthor'] = Constant.artifactAuthor
     item['artifactContent'] = Constant.artifactContent
-    item['jid_id'] = jid
+    item['jid'] = jid
     item['artifactSourceUrl'] = Constant.artifactSourceUrl
     item['artifactUrl'] = url
     item['artifactCollection'] = Utils.getCollectionTime()

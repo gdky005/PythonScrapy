@@ -14,7 +14,7 @@ class JDQSContentItem(scrapy.Item):
     artifactName = Field()
     artifactAuthor = Field()
     artifactContent = Field()
-    jid_id = Field()
+    jid = Field()
     artifactSourceUrl = Field()
     artifactUrl = Field()
     artifactCollection = Field()

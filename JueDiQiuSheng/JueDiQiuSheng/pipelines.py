@@ -30,18 +30,18 @@ class JDQSContentPipeline(object):
             artifactName = item['artifactName']
             artifactAuthor = item['artifactAuthor']
             artifactContent = item['artifactContent']
-            jid_id = item['jid_id']
+            jid = item['jid']
             artifactSourceUrl = item['artifactSourceUrl']
             artifactUrl = item['artifactUrl']
             artifactCollection = item['artifactCollection']
 
             sql = "INSERT INTO " + self.table_name + " (" \
-                                                     "artifactName, artifactAuthor, artifactContent, jid_id, " \
+                                                     "artifactName, artifactAuthor, artifactContent, jid, " \
                                                      "artifactSourceUrl, artifactUrl, artifactCollection" \
                                                      ") VALUES (" \
                                                      "%s, %s, %s, %s, %s, %s, %s" \
                                                      ")"
-            cur.execute(sql, (artifactName, artifactAuthor, artifactContent, jid_id, artifactSourceUrl, artifactUrl, artifactCollection))
+            cur.execute(sql, (artifactName, artifactAuthor, artifactContent, jid, artifactSourceUrl, artifactUrl, artifactCollection))
 
             cur.close()
             self.conn.commit()
