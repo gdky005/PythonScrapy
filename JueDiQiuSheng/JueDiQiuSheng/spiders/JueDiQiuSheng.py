@@ -48,11 +48,18 @@ class JueDiQiuSheng(Spider):
         # print(content)
 
         currentUrl = response.url
+
+
         khbdList = []
         queryKHBDData(content, khbdList, 10002)
         for item in khbdList:
             yield item
 
+
+        jptjList = []
+        queryJPTJData(content, jptjList, 10003)
+        for item in jptjList:
+            yield item
 
     def close(self, reason):
         # self.driver.close()
@@ -73,7 +80,17 @@ def queryKHBDData(content, khbdList, categoryId):
         khbdList.append(data)
 
 
+def queryJPTJData(content, jptjList, categoryId):
+    selector = Selector(text=content)
 
+    textSelector = selector.css("ul.ML1pic").css("a")
+
+    for item in textSelector:
+        url = item.css("::attr(href)")[0].extract()
+        picUrl = item.css("img::attr(src)")[0].extract()
+        name = item.css("img::attr(alt)")[0].extract()
+        data = JDQSDriverUtils.insertItemData2DB(name, Utils.getCollectionTime(), url, picUrl, categoryId)
+        jptjList.append(data)
 
 
         # # 入门必备的 category_id 是：10001
