@@ -11,7 +11,6 @@ from scrapy import Field
 
 class JDQSDCategory(scrapy.Item):
     id = Field()
-    tjId = Field()
     tjName = Field()
     tjUrl = Field()
     tjCollection = Field()

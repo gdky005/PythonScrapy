@@ -7,7 +7,7 @@ from JueDiQiuSheng import Utils
 class JueDiQiuSheng(Spider):
     name = "JueDiQiuSheng"
     start_urls = [
-        "http://www.gamersky.com/z/playbattlegrounds/",
+        "http://www.gamersky.com/z/playbattlegrounds/"
     ]
 
     def __init__(self):
@@ -22,17 +22,35 @@ class JueDiQiuSheng(Spider):
 
         # yield insertQuestionCategory(content)
 
+        url = "http://www.gamersky.com/z/playbattlegrounds/"
         # 插入葵花宝典,分配 id: 10002
         yield insertData2DB("葵花宝典", currentUrl, 10002)
 
+        url = "http://www.gamersky.com/z/playbattlegrounds/"
         # 插入精品推荐,分配 id: 10003
         yield insertData2DB("精品推荐", currentUrl, 10003)
 
+        url = "http://www.gamersky.com/z/playbattlegrounds/handbook/"
         # 插入攻略专题,分配 id: 10004
-        yield insertData2DB("攻略专题", currentUrl, 10004)
+        yield insertData2DB("攻略专题", url, 10004)
+
+        url = "http://www.gamersky.com/z/playbattlegrounds/news/"
+        # 插入热门资讯,分配 id: 10005
+        yield insertData2DB("热门资讯", url, 10005)
+
+        url = "http://www.gamersky.com/z/playbattlegrounds/862094_32615/"
+        # 插入游戏更新,分配 id: 10006
+        yield insertData2DB("游戏更新", url, 10006)
+
+        url = "http://www.gamersky.com/z/playbattlegrounds/862094_28330/"
+        # 插入上手体验,分配 id: 10007
+        yield insertData2DB("上手体验", url, 10007)
+
+        url = "http://www.gamersky.com/z/playbattlegrounds/862094_34214/"
+        # 插入视频解说,分配 id: 10008
+        yield insertData2DB("视频解说", url, 10008)
 
         # yield insertZiXunItem(selector)
-
 
 
 # def insertZiXunItem(selector):
@@ -44,31 +62,6 @@ class JueDiQiuSheng(Spider):
 #             zxName = name
 #             zxUrl = selector.css("ul.nav").css("a::attr(href)")[i].extract()
 #             return insertData2DB(zxName, zxUrl, 10000)
-
-
-# def insertRMBB(currentUrl, item):
-#     # 说明是 入门必备，需要单独获取数据并存储，并分配 id 为： 10001 自行入库
-#     name = item.css("span::text")[0].extract()
-#     url = currentUrl
-#     return insertData2DB(name, url, 10001)
-
-
-# def insertQuestionCategory(content):
-#     # 需要抓取的分类
-#     question = "问题"
-#     selector = Selector(text=content)
-#     # 获取大分类
-#     midLSelector = selector.css("div.Mid_L")[0]
-#     titleDiv = midLSelector.css("div.MidLcon_R").css("li.mjtit").css("div.title")
-#     titList = titleDiv.css("div.tit::text").extract()
-#     hrefA = titleDiv.css("div.more").css("a::attr(href)").extract()
-#     for i in range(len(titList)):
-#         if question == titList[i]:
-#             url = hrefA[i]
-#             jid = Utils.getCategoryId(url)
-#             print("对应的链接是：" + url)
-#             print("对应的jid 是：" + jid)
-#             return insertData2DB(question, url, jid)
 
 
 # 插入数据到数据库中
