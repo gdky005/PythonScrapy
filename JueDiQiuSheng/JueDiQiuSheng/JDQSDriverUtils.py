@@ -3,7 +3,7 @@ import time
 from scrapy import Selector
 
 from JueDiQiuSheng import Utils
-from JueDiQiuSheng.items import JDQSItem
+from JueDiQiuSheng.items import JDQSTJItem
 
 
 def insertData(driver, content, categoryId, global_item_list):
@@ -65,13 +65,13 @@ def insertItemData2DB(artifactName, artifactDate, artifactSourceUrl, picUrl, cat
     url = '<p><a href="http://www.zkteam.cc/JueDiQiuSheng/detail.html?jid=' + jid + \
           '">http://www.zkteam.cc/JueDiQiuSheng/detail.html?jid=' + jid + "</a></p>"
 
-    item = JDQSItem()
+    item = JDQSTJItem()
     item['id'] = jid
-    item['artifactName'] = artifactName
-    item['artifactDate'] = artifactDate
-    item['artifactSourceUrl'] = artifactSourceUrl
-    item['artifactUrl'] = url
-    item['picUrl'] = picUrl
+    item['tjName'] = artifactName
+    item['tjDate'] = artifactDate
+    item['tjSourceUrl'] = artifactSourceUrl
+    item['tjUrl'] = url
+    item['tjPicUrl'] = picUrl
     item['categoryId'] = categoryId
 
     return item
