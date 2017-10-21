@@ -31,17 +31,17 @@ class JueDiQiuSheng(Spider):
         # dispatcher.connect(self.spider_closed, signals.spider_closed)
         print("当前运行时间是：" + Utils.getCollectionTime())
 
-    # def start_requests(self):
-    #     params = {'pageCount': '100'}
-    #     # 分类接口
-    #     content = requests.get('http://zkteam.cc/JueDiQiuSheng/categoryJson', params)
-    #     json = content.json()
-    #     resultJson = json["result"]
-    #
-    #     for result in resultJson:
-    #         newUrl = result["categoryUrl"]
-    #         print("当前抓取的 Url 是：" + newUrl)
-    #         yield Request(newUrl)
+    def start_requests(self):
+        params = {'pageCount': '100'}
+        # 分类接口
+        content = requests.get('http://zkteam.cc/JueDiQiuSheng/categoryJson', params)
+        json = content.json()
+        resultJson = json["result"]
+
+        for result in resultJson:
+            newUrl = result["categoryUrl"]
+            print("当前抓取的 Url 是：" + newUrl)
+            yield Request(newUrl)
 
     def parse(self, response):
         content = response.body.decode("utf-8")
