@@ -29,7 +29,7 @@ class JDQSTJItemPipeline(object):
             cur = self.conn.cursor()
 
             # id = item['id']
-            id = item['id']
+            jid = item['jid']
             tjName = item['tjName']
             tjDate = item['tjDate']
             tjSourceUrl = item['tjSourceUrl']
@@ -39,11 +39,11 @@ class JDQSTJItemPipeline(object):
             tjCollection = Utils.getCollectionTime()
 
             sql = "INSERT INTO " + self.table_name + " (" \
-                                                     "id, tjName, tjDate, tjSourceUrl, tjUrl, tjPicUrl, tjCategoryId_id, tjCollection" \
+                                                     "jid, tjName, tjDate, tjSourceUrl, tjUrl, tjPicUrl, tjCategoryId_id, tjCollection" \
                                                      ") VALUES (" \
                                                      "%s, %s, %s, %s, %s, %s, %s, %s" \
                                                      ")"
-            cur.execute(sql, (id, tjName, tjDate, tjSourceUrl, tjUrl, tjPicUrl, categoryId, tjCollection))
+            cur.execute(sql, (jid, tjName, tjDate, tjSourceUrl, tjUrl, tjPicUrl, categoryId, tjCollection))
             cur.close()
             self.conn.commit()
 

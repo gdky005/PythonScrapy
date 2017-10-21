@@ -10,7 +10,7 @@ from scrapy import Field
 
 
 class JDQSTJItem(scrapy.Item):
-    id = Field()
+    jid = Field()
     tjName = Field()
     tjDate = Field()
     tjSourceUrl = Field()

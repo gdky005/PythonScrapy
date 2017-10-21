@@ -66,7 +66,7 @@ def insertItemData2DB(artifactName, artifactDate, artifactSourceUrl, picUrl, cat
           '">http://www.zkteam.cc/JueDiQiuSheng/detail.html?jid=' + jid + "</a></p>"
 
     item = JDQSTJItem()
-    item['id'] = jid
+    item['jid'] = jid
     item['tjName'] = artifactName
     item['tjDate'] = artifactDate
     item['tjSourceUrl'] = artifactSourceUrl
