@@ -8,7 +8,7 @@ from JueDiQiuSheng import Utils
 
 
 class JDQSPicUrl(Spider):
-    name = "JDQSPicUrl"
+    name = "JueDiQiuSheng"
     start_urls = [
         # 图库分类接口
         # "http://www.zkteam.cc/JueDiQiuSheng/picCateogyJson",
@@ -28,7 +28,7 @@ class JDQSPicUrl(Spider):
     def start_requests(self):
         params = {'pageCount': '100'}
         # 图库分类接口
-        content = requests.get('http://zkteam.cc/JueDiQiuSheng/picCateogyJson', params)
+        content = requests.get('http://zkteam.cc/JueDiQiuSheng/picCategoryJson', params)
         json = content.json()
         resultJson = json["result"]
 
@@ -75,6 +75,9 @@ class JDQSPicUrl(Spider):
             pass
         content = self.driver.page_source
         return content
+
+    def close(self, reason):
+        self.driver.close()
 
 
 # 插入数据到数据库中
