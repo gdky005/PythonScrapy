@@ -1,14 +1,8 @@
-import requests
-import time
-from scrapy import Selector, Request
+from scrapy import Selector
 from scrapy.spiders import Spider
-from selenium import webdriver
-from scrapy import signals
-from scrapy.xlib.pydispatch import dispatcher
 
 
-from JueDiQiuSheng import Utils, JDQSDriverUtils, JDQSRMBBUtils
-from JueDiQiuSheng.items import JDQSTJItem
+from JueDiQiuSheng import Utils, JDQSDriverUtils
 
 
 class JueDiQiuSheng(Spider):
@@ -26,22 +20,7 @@ class JueDiQiuSheng(Spider):
 
     def __init__(self):
         super(JueDiQiuSheng, self).__init__()
-        # self.driver = webdriver.Chrome("/Users/WangQing/opt/chrome/chromedriver")
-        # self.driver.maximize_window()
-        # # dispatcher.connect(self.spider_closed, signals.spider_closed)
         # print("当前运行时间是：" + Utils.getCollectionTime())
-
-    # def start_requests(self):
-    #     params = {'pageCount': '100'}
-    #     # 分类接口
-    #     content = requests.get('http://zkteam.cc/JueDiQiuSheng/categoryJson', params)
-    #     json = content.json()
-    #     resultJson = json["result"]
-    #
-    #     for result in resultJson:
-    #         newUrl = result["categoryUrl"]
-    #         print("当前抓取的 Url 是：" + newUrl)
-    #         yield Request(newUrl)
 
     def parse(self, response):
         content = response.body.decode("utf-8")
@@ -49,12 +28,10 @@ class JueDiQiuSheng(Spider):
 
         currentUrl = response.url
 
-
         khbdList = []
         queryKHBDData(content, khbdList, 10002)
         for item in khbdList:
             yield item
-
 
         jptjList = []
         queryJPTJData(content, jptjList, 10003)
@@ -91,40 +68,3 @@ def queryJPTJData(content, jptjList, categoryId):
         name = item.css("img::attr(alt)")[0].extract()
         data = JDQSDriverUtils.insertItemData2DB(name, Utils.getCollectionTime(), url, picUrl, categoryId)
         jptjList.append(data)
-
-
-        # # 入门必备的 category_id 是：10001
-        # if currentUrl == "http://www.gamersky.com/z/playbattlegrounds/":
-        #     infoList = []
-        #     JDQSRMBBUtils.queryRMBBData(content, infoList)
-        #
-        #     for e in infoList:
-        #         artifactName = e["name"]
-        #         url = e["url"]
-        #         picUrl = e["picUrl"]
-        #         yield insertItemData2DB(artifactName, Utils.getCollectionTime(), url, picUrl, 10001)
-        #     return
-        #
-        # categoryId = 0
-        # try:
-        #     categoryId = Utils.getCategoryId(currentUrl)
-        # except:
-        #     if currentUrl == "http://www.gamersky.com/z/playbattlegrounds/news/":
-        #         categoryId = 10000
-        #     pass
-        #
-        # content = JDQSDriverUtils.driverScroll(self.driver, currentUrl)
-        #
-        # global_item_list = []
-        #
-        # JDQSDriverUtils.insertData(self.driver, content, categoryId, global_item_list)
-        #
-        # for item in global_item_list:
-        #     yield item
-
-        # time.sleep(2)
-        # self.driver.close()
-
-
-
-
