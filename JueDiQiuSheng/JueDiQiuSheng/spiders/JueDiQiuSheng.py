@@ -12,7 +12,9 @@ from JueDiQiuSheng.items import JDQSTJItem
 
 
 class JueDiQiuSheng(Spider):
+
     name = "JueDiQiuSheng"
+
     start_urls = [
         # Bug问题
         # "http://www.gamersky.com/z/playbattlegrounds/862094_34425/",
