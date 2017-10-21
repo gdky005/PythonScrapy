@@ -27,6 +27,8 @@ class JueDiQiuSheng(Spider):
         # 插入葵花宝典,分配 id: 10002
         yield insertData2DB("葵花宝典", currentUrl, 10002)
 
+        yield insertZiXunItem(selector)
+
         for item in GLHJtitSelector:
             try:
                 # 插入 攻略大全的其他分类
@@ -39,6 +41,17 @@ class JueDiQiuSheng(Spider):
                 # 插入 新手攻略 分类
                 yield insertRMBB(currentUrl, item)
                 pass
+
+
+def insertZiXunItem(selector):
+    navHeaderSelector = selector.css("ul.nav").css("a::text")
+
+    for i in range(len(navHeaderSelector)):
+        name = navHeaderSelector[i].extract()
+        if name == "资讯":
+            zxName = name
+            zxUrl = selector.css("ul.nav").css("a::attr(href)")[i].extract()
+            return insertData2DB(zxName, zxUrl, 10000)
 
 
 def insertRMBB(currentUrl, item):
