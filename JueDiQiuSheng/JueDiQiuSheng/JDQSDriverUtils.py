@@ -16,7 +16,8 @@ def insertData(driver, content, categoryId, global_item_list):
         artifactDate = item.css("div.time::text")[0].extract()
         artifactSourceUrl = item.css("a::attr(href)")[0].extract()
 
-        print("当前的分类 id 是：" + categoryId)
+        print("当前的分类 id 是：")
+        print(categoryId)
         print("当前的分类 name 是：" + artifactName)
         print("当前的分类 href 是：" + artifactSourceUrl)
         print("当前的分类 date 是：" + artifactDate)
