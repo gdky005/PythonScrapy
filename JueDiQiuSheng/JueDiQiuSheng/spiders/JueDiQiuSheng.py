@@ -25,6 +25,9 @@ class JueDiQiuSheng(Spider):
         # 插入葵花宝典,分配 id: 10002
         yield insertData2DB("葵花宝典", currentUrl, 10002)
 
+        # 插入精品推荐,分配 id: 10003
+        yield insertData2DB("精品推荐", currentUrl, 10003)
+
         # yield insertZiXunItem(selector)
 
 
