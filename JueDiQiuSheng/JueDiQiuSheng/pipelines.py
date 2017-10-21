@@ -26,17 +26,17 @@ class JDQSTJCategoryPipeline(object):
             # 给库中插入数据
             cur = self.conn.cursor()
 
-            jid = item['jid']
+            id = item['id']
             tjName = item['tjName']
             tjUrl = item['tjUrl']
             tjCollection = item['tjCollection']
 
             sql = "INSERT INTO " + self.table_name + " (" \
-                                                     "jid, tjName, tjUrl, tjCollection" \
+                                                     "id, tjName, tjUrl, tjCollection" \
                                                      ") VALUES (" \
                                                      "%s, %s, %s, %s" \
                                                      ")"
-            cur.execute(sql, (jid, tjName, tjUrl, tjCollection))
+            cur.execute(sql, (id, tjName, tjUrl, tjCollection))
 
             cur.close()
             self.conn.commit()

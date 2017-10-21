@@ -10,7 +10,7 @@ from scrapy import Field
 
 
 class JDQSDCategory(scrapy.Item):
-    jid = Field()
+    id = Field()
     tjId = Field()
     tjName = Field()
     tjUrl = Field()

@@ -75,7 +75,7 @@ class JueDiQiuSheng(Spider):
 def insertData2DB(name, url, category):
     from JueDiQiuSheng.items import JDQSDCategory
     item = JDQSDCategory()
-    item['jid'] = category
+    item['id'] = category
     item['tjName'] = name
     item['tjUrl'] = url
     item['tjCollection'] = Utils.getCollectionTime()
