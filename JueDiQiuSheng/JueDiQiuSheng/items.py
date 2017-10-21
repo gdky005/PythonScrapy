@@ -14,4 +14,5 @@ class JDQSDCategory(scrapy.Item):
     categoryId = Field()
     categoryName = Field()
     categoryUrl = Field()
+    artifactCollection = Field()
     pass

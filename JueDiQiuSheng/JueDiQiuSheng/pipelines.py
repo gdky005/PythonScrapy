@@ -29,20 +29,21 @@ class JDQSCategoryPipeline(object):
             id = item['id']
             categoryName = item['categoryName']
             categoryUrl = item['categoryUrl']
+            artifactCollection = item['artifactCollection']
 
             sql = "INSERT INTO " + self.table_name + " (" \
-                                                     "id, categoryName, categoryUrl" \
+                                                     "id, categoryName, categoryUrl, artifactCollection" \
                                                      ") VALUES (" \
-                                                     "%s, %s, %s" \
+                                                     "%s, %s, %s, %s" \
                                                      ")"
-            cur.execute(sql, (id, categoryName, categoryUrl))
+            cur.execute(sql, (id, categoryName, categoryUrl, artifactCollection))
 
             cur.close()
             self.conn.commit()
 
             return item
-        except Exception:
-            print("JDQSCategoryPipeline process_item 出现异常")
+        except Exception as e:
+            print("JDQSCategoryPipeline process_item 出现异常: " + str(e))
             pass
 
     def close_spider(self):
