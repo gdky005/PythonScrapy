@@ -78,7 +78,7 @@ def rmbb(element):
 
 # 添加分类属性
 def addCategoryData(infoList, name, category_url):
-    from JueDiQiuSheng.JueDiQiuSheng import Utils
+    from JueDiQiuSheng import Utils
     category_id = Utils.getCategoryId(category_url)
     print("获取 " + name + " category_id：" + category_id)
     for item in infoList:
@@ -149,7 +149,7 @@ def getElement(element):
 
 # 插入数据到数据库中
 def insertData2DB(name, url, pic_url, category_id, category_name):
-    from JueDiQiuSheng.JueDiQiuSheng import Utils
+    from JueDiQiuSheng import Utils
     jid = Utils.getJid(url)
 
     item = JuediqiushengItem()
