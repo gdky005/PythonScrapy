@@ -29,7 +29,7 @@ class JueDiQiuSheng(Spider):
 
     def start_requests(self):
 
-        params = {'pageCount': '2000'}
+        params = {'pageCount': '5000'}
         content = requests.get('http://zkteam.cc/JueDiQiuSheng/itemJson', params) # 这是 item 默认的列表数据，默认读取这个
         sourceUrl = "artifactSourceUrl"
 
