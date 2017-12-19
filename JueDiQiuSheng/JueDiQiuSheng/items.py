@@ -9,8 +9,9 @@ import scrapy
 from scrapy import Field
 
 
-class JDQSTJItem(scrapy.Item):
+class JDQSItem(scrapy.Item):
     id = Field()
+    jid = Field()
     tjName = Field()
     tjDate = Field()
     tjSourceUrl = Field()
