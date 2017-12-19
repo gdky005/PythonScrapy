@@ -30,12 +30,17 @@ class JueDiQiuSheng(Spider):
     def start_requests(self):
 
         params = {'pageCount': '2000'}
-        content = requests.get('http://zkteam.cc/JueDiQiuSheng/itemJson', params)
+        content = requests.get('http://zkteam.cc/JueDiQiuSheng/itemJson', params) # 这是 item 默认的列表数据，默认读取这个
+        sourceUrl = "artifactSourceUrl"
+
+        # content = requests.get('http://www.zkteam.cc/JueDiQiuSheng/recommendedItemJson', params) # 这是 推荐列表数据。
+        # sourceUrl = "tjSourceUrl"
+
         json = content.json()
         resultJson = json["result"]
 
         for result in resultJson:
-            newUrl = result["artifactSourceUrl"]
+            newUrl = result[sourceUrl]
             print("当前抓取的 Url 是：" + newUrl)
             yield Request(newUrl)
 
