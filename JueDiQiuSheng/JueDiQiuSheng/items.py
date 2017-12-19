@@ -12,10 +12,11 @@ from scrapy import Field
 class JDQSItem(scrapy.Item):
     id = Field()
     jid = Field()
-    tjName = Field()
-    tjDate = Field()
-    tjSourceUrl = Field()
-    tjUrl = Field()
-    tjPicUrl = Field()
+    picUrl = Field()
+    artifactName = Field()
+    artifactDate = Field()
+    artifactSourceUrl = Field()
+    artifactUrl = Field()
+    artifactCollection = Field()
     categoryId = Field()
     pass
