@@ -70,7 +70,7 @@ class JueDiQiuSheng(Spider):
         print("文章作者：\r\n\t" + articleAuthor)
         print("\r\n\t下面是正文：\r\n\t")
 
-        subString += "<h1><p align=\"center\">" + articleName + "</p></h1>\r\n"
+        subString += "<h3><p align=\"center\">" + articleName + "</p></h3>\r\n"
         subString += "<h5><p align=\"right\">" + articleAuthor + "</p></h5>"
 
         wordDetail = selector.css("div.Mid2L_con")
