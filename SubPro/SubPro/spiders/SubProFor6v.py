@@ -29,20 +29,20 @@ class SubProFor6v(Spider):
 
         # #
         # # 影片介绍：
-        movie_intr = selector.xpath('//div[@id="endText"]/p/text()').extract()
-        if movie_intr.__len__() > 25:
-            movie_intr = movie_intr[31]
+        movie_intro = selector.xpath('//div[@id="endText"]/p/text()').extract()
+        if movie_intro.__len__() > 25:
+            movie_intro = movie_intro[31]
         else:
-            movie_intr = movie_intr[22]
+            movie_intro = movie_intro[22]
 
         #
         # # 影片截图：
-        movie_intr_pic = selector.xpath('//div[@id="endText"]/p/img').css("img::attr(src)").extract()
+        movie_intro_pic = selector.xpath('//div[@id="endText"]/p/img').css("img::attr(src)").extract()
 
-        if movie_intr_pic.__len__() > 1:
-            movie_intr_pic = movie_intr_pic[movie_intr_pic.__len__() - 1].strip()
+        if movie_intro_pic.__len__() > 1:
+            movie_intro_pic = movie_intro_pic[movie_intro_pic.__len__() - 1].strip()
         else:
-            movie_intr_pic = ""
+            movie_intro_pic = ""
 
         #
         # # .select("string(.)").extract() #表示获取标签内所有的文字，不分组。
@@ -56,8 +56,8 @@ class SubProFor6v(Spider):
             "影片名字：<" + movie_name + ">, \n" +
             "影片图片：<" + movie_pic + ">, \n" +
             "更新日期：<" + movie_update_time + ">。 \n" +
-            "影片介绍：<" + movie_intr + ">, \n" +
-            "影片截图：<" + movie_intr_pic + ">。 \n"
+            "影片介绍：<" + movie_intro + ">, \n" +
+            "影片截图：<" + movie_intro_pic + ">。 \n"
         )
 
         downloadInfo =selector.xpath('//tbody/tr/td/a')

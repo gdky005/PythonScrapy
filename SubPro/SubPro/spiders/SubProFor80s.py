@@ -25,10 +25,10 @@ class SubProFor80s(Spider):
         movie_pic = "http:" + selector.xpath('//div[@id="minfo"]/div[@class="img"]').css("img::attr(src)").extract()[0].strip()
 
         # 影片介绍：
-        movie_intr = selector.xpath('//div[@id="movie_content"]/text()')[1].extract()
+        movie_intro = selector.xpath('//div[@id="movie_content"]/text()')[1].extract()
 
         # 影片截图：
-        movie_intr_pic = "http:" + selector.xpath('//div[@class="noborder block1"]').css("img::attr(src)").extract()[0].strip()
+        movie_intro_pic = "http:" + selector.xpath('//div[@class="noborder block1"]').css("img::attr(src)").extract()[0].strip()
 
         # .select("string(.)").extract() #表示获取标签内所有的文字，不分组。
 
@@ -44,8 +44,8 @@ class SubProFor80s(Spider):
             "影片名字：<" + movie_name + ">, \n" +
             "影片图片：<" + movie_pic + ">, \n" +
             "更新日期：<" + movie_update_time + ">。 \n" +
-            "影片介绍：<" + movie_intr + ">, \n" +
-            "影片截图：<" + movie_intr_pic + ">。 \n"
+            "影片介绍：<" + movie_intro + ">, \n" +
+            "影片截图：<" + movie_intro_pic + ">。 \n"
         )
 
         downloadInfo = selector.xpath('//form[@name="myform"]/ul[@class="dllist1"]/li/span[@class="dlname nm"]/span/a')
