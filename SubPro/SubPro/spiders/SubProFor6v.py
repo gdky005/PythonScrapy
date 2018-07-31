@@ -26,7 +26,6 @@ class SubProFor6v(Spider):
         # 影片图片：
         movie_pic = selector.xpath('//div[@id="endText"]/p/img').css("img::attr(src)").extract()[0].strip()
 
-
         # #
         # # 影片介绍：
         movie_intro = selector.xpath('//div[@id="endText"]/p/text()').extract()
@@ -50,7 +49,6 @@ class SubProFor6v(Spider):
         # ◎上映日期：
         movie_update_time = selector.xpath('//div[@id="endText"]/p/text()').extract()[10].strip()
 
-
         # 已经获取到需要的名称
         print(
             "影片名字：<" + movie_name + ">, \n" +
@@ -60,21 +58,14 @@ class SubProFor6v(Spider):
             "影片截图：<" + movie_intro_pic + ">。 \n"
         )
 
-        downloadInfo =selector.xpath('//tbody/tr/td/a')
+        downloadInfo = selector.xpath('//tbody/tr/td/a')
 
         for downloadData in downloadInfo:
             # 影片名称：
             movie_fj_name = downloadData.css("a::text").extract()[0].strip()
             # 磁力链接：
-            download_url =downloadData.css("a::attr(href)").extract()[0].strip()
+            download_url = downloadData.css("a::attr(href)").extract()[0].strip()
 
-            # 已经获取到需要的名称
-            print(
-                "影片名称：<" + movie_fj_name + ">, \n" +
-                "磁力链接：<" + download_url + ">。\n")
-
-
-
-
-
-
+            print("\n分集名字是：" + movie_fj_name
+                  + ", \n分集集数: " + movie_fj_name[0:movie_fj_name.index(".")]
+                  + ", \n磁力链接：<" + download_url + ">。\n")

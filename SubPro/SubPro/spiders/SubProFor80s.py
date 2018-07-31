@@ -22,13 +22,15 @@ class SubProFor80s(Spider):
         movie_name = selector.xpath('//h1[@class="font14w"]/text()').extract()[0].strip()
 
         # 影片图片：
-        movie_pic = "http:" + selector.xpath('//div[@id="minfo"]/div[@class="img"]').css("img::attr(src)").extract()[0].strip()
+        movie_pic = "http:" + selector.xpath('//div[@id="minfo"]/div[@class="img"]').css("img::attr(src)").extract()[
+            0].strip()
 
         # 影片介绍：
         movie_intro = selector.xpath('//div[@id="movie_content"]/text()')[1].extract()
 
         # 影片截图：
-        movie_intro_pic = "http:" + selector.xpath('//div[@class="noborder block1"]').css("img::attr(src)").extract()[0].strip()
+        movie_intro_pic = "http:" + selector.xpath('//div[@class="noborder block1"]').css("img::attr(src)").extract()[
+            0].strip()
 
         # .select("string(.)").extract() #表示获取标签内所有的文字，不分组。
 
@@ -37,7 +39,6 @@ class SubProFor80s(Spider):
 
         if movie_update_time is "":
             movie_update_time = selector.xpath('//span[@class="span_block"]/text()')[10].extract().strip()
-
 
         # 已经获取到需要的名称
         print(
@@ -54,15 +55,8 @@ class SubProFor80s(Spider):
             # 影片名称：
             movie_fj_name = downloadData.css("a::text").extract()[0].strip()
             # 磁力链接：
-            download_url =downloadData.css("a::attr(href)").extract()[0].strip()
+            download_url = downloadData.css("a::attr(href)").extract()[0].strip()
 
-            # 已经获取到需要的名称
-            print(
-                "影片名称：<" + movie_fj_name + ">, \n" +
-                "磁力链接：<" + download_url + ">。\n")
-
-
-
-
-
-
+            print("\n分集名字是：" + movie_fj_name
+                  + ", \n分集集数: " + movie_fj_name[movie_fj_name.index("第") + 1:movie_fj_name.index("集")]
+                  + ", \n磁力链接：<" + download_url + ">。\n")
