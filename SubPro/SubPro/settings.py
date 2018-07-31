@@ -13,7 +13,11 @@ BOT_NAME = 'SubPro'
 
 SPIDER_MODULES = ['SubPro.spiders']
 NEWSPIDER_MODULE = 'SubPro.spiders'
-
+ITEM_PIPELINES = {
+    'SubPro.pipelines.SubInfoPipeline': 301,
+    'SubPro.pipelines.SubMovieDownloadPipeline': 402,
+    'SubPro.pipelines.SubMovieLastestPipeline': 503,
+}
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
