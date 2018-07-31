@@ -14,9 +14,9 @@ BOT_NAME = 'SubPro'
 SPIDER_MODULES = ['SubPro.spiders']
 NEWSPIDER_MODULE = 'SubPro.spiders'
 ITEM_PIPELINES = {
-    'SubPro.pipelines.SubInfoPipeline': 301,
-    'SubPro.pipelines.SubMovieDownloadPipeline': 402,
-    'SubPro.pipelines.SubMovieLastestPipeline': 503,
+    'SubPro.pipelines.SubInfoPipeline': 3001,
+    'SubPro.pipelines.SubMovieDownloadPipeline': 4002,
+    'SubPro.pipelines.SubMovieLastestPipeline': 5003,
 }
 
 

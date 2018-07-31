@@ -7,7 +7,7 @@ from DBHelper import insertSubInfoItem2DB, insertSubMovieDownloadItem2DB, insert
 class SubProFor80s(Spider):
     name = "SubProFor80s"
     start_urls = [
-        "https://www.80s.tw/ju/22949",
+        "https://www.80s.tw/dm/23093",
     ]
 
     def __init__(self):
@@ -60,9 +60,6 @@ class SubProFor80s(Spider):
 
         numberIndex = 0
         for index, downloadData in enumerate(downloadInfo):
-            if index == 0:
-                continue
-
             # 影片分集名称：
             movie_fj_name = downloadData.css("a::text").extract()[0].strip()
             # 磁力链接：
@@ -72,6 +69,16 @@ class SubProFor80s(Spider):
 
             if int(number) > numberIndex:
                 numberIndex = int(number)
+
+            numberStr = str(number)
+
+            if len(numberStr) < 3:
+                if len(numberStr) == 1:
+                    numberStr = "00" + numberStr
+                elif len(numberStr) == 2:
+                    numberStr = "0" + numberStr
+
+            number = numberStr
 
             print("\n分集名字是：" + movie_fj_name
                   + ", \n分集集数: " + number
