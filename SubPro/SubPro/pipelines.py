@@ -22,21 +22,51 @@ class BaseSubProPipeline(object):
         self.conn = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.password,
                                     db=self.database_name, charset=self.charset)
 
-    def close_spider(self, spider):
-        self.conn.close()
-
-
-class SubInfoPipeline(BaseSubProPipeline):
-    table_name = "Subscribe_submovieinfo"
-
     def process_item(self, item, spider):
         try:
-            if item is None or item is bool or item._class != SubInfoItem._class:
+            if self.is_this_obj(item, self.getChildItem()):
                 return item
 
             # 给库中插入数据
             cur = self.conn.cursor()
 
+            self.executeSql(item, cur)
+
+            cur.close()
+            self.conn.commit()
+
+            return item
+        except Exception as e:
+            print(self.getClassName().__name__ + " process_item 出现异常:" + e.__str__())
+            return item
+
+    def executeSql(self, item, cur):
+        print("初始化 sql 相关数据")
+
+    def getChildItem(self):
+        return "getChildItem"
+
+    def getClassName(self):
+        return BaseSubProPipeline
+
+    def close_spider(self, spider):
+        self.conn.close()
+
+    def is_this_obj(self, item, object):
+        if item is None or item is bool or item._class != object._class:
+            return True
+
+
+class SubInfoPipeline(BaseSubProPipeline):
+    table_name = "Subscribe_submovieinfo"
+
+    def getChildItem(self):
+        return SubInfoItem
+
+    def getClassName(self):
+        return SubInfoPipeline
+
+    def executeSql(self, item, cur):
             id = item['pid']
             name = item['name']
             pic = item['pic']
@@ -51,26 +81,18 @@ class SubInfoPipeline(BaseSubProPipeline):
                                                      "%s, %s, %s, %s, %s, %s, %s" \
                                                      ")"
             cur.execute(sql, (id, name, pic, url, update_time, intro, capture_pic))
-            cur.close()
-            self.conn.commit()
-
-            return item
-        except Exception as e:
-            print("SubInfoPipeline process_item 出现异常:" + e.__str__())
-            return item
 
 
 class SubMovieDownloadPipeline(BaseSubProPipeline):
     table_name = "Subscribe_submoviedownload"
 
-    def process_item(self, item, spider):
-        try:
-            if item is None or item is bool or item._class != SubMovieDownloadInfoItem._class:
-                return item
+    def getChildItem(self):
+        return SubMovieDownloadInfoItem
 
-            # 给库中插入数据
-            cur = self.conn.cursor()
+    def getClassName(self):
+        return SubMovieDownloadPipeline
 
+    def executeSql(self, item, cur):
             pid = item['pid']
             fj_name = item['fj_name']
             fj_number = item['fj_number']
@@ -85,29 +107,18 @@ class SubMovieDownloadPipeline(BaseSubProPipeline):
                                                      "%s, %s, %s, %s" \
                                                      ")"
             cur.execute(sql, (id, pid, fj_name, fj_download_url))
-            cur.close()
-            self.conn.commit()
-
-            return item
-        except Exception as e:
-            print("SubMovieDownloadPipeline process_item 出现异常:" + e.__str__())
-            return item
 
 
 class SubMovieLastestPipeline(BaseSubProPipeline):
     table_name = "Subscribe_submovielastestinfo"
 
-    def process_item(self, item, spider):
-        # if item is None or item == True or item ==False or (item._class != SubMovieLastestInfoItem) :
-        #     return item
+    def getChildItem(self):
+        return SubMovieLastestInfoItem
 
-        try:
-            if item is None or item is bool or item._class != SubMovieLastestInfoItem._class:
-                return item
+    def getClassName(self):
+        return SubMovieLastestPipeline
 
-            # 给库中插入数据
-            cur = self.conn.cursor()
-
+    def executeSql(self, item, cur):
             pid = item['pid']
             id = pid
             fj_number = item['fj_number']
@@ -118,10 +129,3 @@ class SubMovieLastestPipeline(BaseSubProPipeline):
                                                      "%s, %s, %s" \
                                                      ")"
             cur.execute(sql, (id, pid, fj_number))
-            cur.close()
-            self.conn.commit()
-
-            return item
-        except Exception as e:
-            print("SubMovieLastestPipeline process_item 出现异常:" + e.__str__())
-            return item
