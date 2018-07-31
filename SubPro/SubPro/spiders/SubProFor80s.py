@@ -1,7 +1,7 @@
 from scrapy import Selector
 from scrapy.spiders import Spider
-from SubPro.items import SubInfoItem, SubMovieDownloadInfoItem, SubMovieLastestInfoItem
 
+from DBHelper import insertSubInfoItem2DB, insertSubMovieDownloadItem2DB, insertSubMovieLastestItem2DB
 
 
 class SubProFor80s(Spider):
@@ -56,7 +56,6 @@ class SubProFor80s(Spider):
 
         yield insertSubInfoItem2DB(pid, movie_name, movie_pic, url, movie_update_time, movie_intro, movie_intro_pic)
 
-
         downloadInfo = selector.xpath('//form[@name="myform"]/ul[@class="dllist1"]/li/span[@class="dlname nm"]/span/a')
 
         numberIndex = 0
@@ -64,12 +63,12 @@ class SubProFor80s(Spider):
             if index == 0:
                 continue
 
-            # 影片名称：
+            # 影片分集名称：
             movie_fj_name = downloadData.css("a::text").extract()[0].strip()
             # 磁力链接：
             download_url = downloadData.css("a::attr(href)").extract()[0].strip()
 
-            number = movie_fj_name[movie_fj_name.index("第") + 1:movie_fj_name.index("集")]
+            number = movie_fj_name[(movie_fj_name.index("第") + 1):movie_fj_name.index("集")]
 
             if int(number) > numberIndex:
                 numberIndex = int(number)
@@ -82,31 +81,3 @@ class SubProFor80s(Spider):
 
         yield insertSubMovieLastestItem2DB(pid, numberIndex)
 
-
-# 插入数据到数据库中
-def insertSubInfoItem2DB(pid, movie_name, movie_pic, url, movie_update_time, movie_intro, movie_intro_pic):
-    item = SubInfoItem()
-    item['pid'] = pid
-    item['name'] = movie_name
-    item['pic'] = movie_pic
-    item['url'] = url
-    item['update_time'] = movie_update_time
-    item['intro'] = movie_intro
-    item['capture_pic'] = movie_intro_pic
-    return item
-
-
-def insertSubMovieDownloadItem2DB(pid, fj_name, fj_number, fj_download_url):
-    item = SubMovieDownloadInfoItem()
-    item['pid'] = pid
-    item['fj_name'] = fj_name
-    item['fj_number'] = fj_number
-    item['fj_download_url'] = fj_download_url
-    return item
-
-
-def insertSubMovieLastestItem2DB(pid, fj_number):
-    item = SubMovieLastestInfoItem()
-    item['pid'] = pid
-    item['fj_number'] = fj_number
-    return item

@@ -1,6 +1,6 @@
 from scrapy import Selector
 from scrapy.spiders import Spider
-from SubPro.items import SubInfoItem, SubMovieDownloadInfoItem, SubMovieLastestInfoItem
+from DBHelper import insertSubInfoItem2DB, insertSubMovieDownloadItem2DB, insertSubMovieLastestItem2DB
 
 
 class SubProFor6v(Spider):
@@ -88,32 +88,3 @@ class SubProFor6v(Spider):
             yield insertSubMovieDownloadItem2DB(pid, movie_fj_name, number, download_url)
 
         yield insertSubMovieLastestItem2DB(pid, numberIndex)
-
-
-# 插入数据到数据库中
-def insertSubInfoItem2DB(pid, movie_name, movie_pic, url, movie_update_time, movie_intro, movie_intro_pic):
-    item = SubInfoItem()
-    item['pid'] = pid
-    item['name'] = movie_name
-    item['pic'] = movie_pic
-    item['url'] = url
-    item['update_time'] = movie_update_time
-    item['intro'] = movie_intro
-    item['capture_pic'] = movie_intro_pic
-    return item
-
-
-def insertSubMovieDownloadItem2DB(pid, fj_name, fj_number, fj_download_url):
-    item = SubMovieDownloadInfoItem()
-    item['pid'] = pid
-    item['fj_name'] = fj_name
-    item['fj_number'] = fj_number
-    item['fj_download_url'] = fj_download_url
-    return item
-
-
-def insertSubMovieLastestItem2DB(pid, fj_number):
-    item = SubMovieLastestInfoItem()
-    item['pid'] = pid
-    item['fj_number'] = fj_number
-    return item
