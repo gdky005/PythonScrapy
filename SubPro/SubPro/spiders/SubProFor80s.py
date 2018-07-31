@@ -1,6 +1,7 @@
 from scrapy import Selector
 from scrapy.spiders import Spider
-from selenium import webdriver
+from SubPro.items import SubInfoItem, SubMovieDownloadInfoItem, SubMovieLastestInfoItem
+
 
 
 class SubProFor80s(Spider):
@@ -17,7 +18,7 @@ class SubProFor80s(Spider):
         # print("爬取的内容如下：" + content)
 
         url = response.url
-        pid = url[url.rindex("/") + 1:url.rindex(".")]
+        pid = url[url.rindex("/") + 1:len(url)]
         print("影片的 Url是：" + response.url + ", pid 是：" + pid)
 
         selector = Selector(text=content)
@@ -53,14 +54,58 @@ class SubProFor80s(Spider):
             "影片截图：<" + movie_intro_pic + ">。 \n"
         )
 
+        yield insertSubInfoItem2DB(pid, movie_name, movie_pic, url, movie_update_time, movie_intro, movie_intro_pic)
+
+
         downloadInfo = selector.xpath('//form[@name="myform"]/ul[@class="dllist1"]/li/span[@class="dlname nm"]/span/a')
 
-        for downloadData in downloadInfo:
+        numberIndex = 0
+        for index, downloadData in enumerate(downloadInfo):
+            if index == 0:
+                continue
+
             # 影片名称：
             movie_fj_name = downloadData.css("a::text").extract()[0].strip()
             # 磁力链接：
             download_url = downloadData.css("a::attr(href)").extract()[0].strip()
 
+            number = movie_fj_name[movie_fj_name.index("第") + 1:movie_fj_name.index("集")]
+
+            if int(number) > numberIndex:
+                numberIndex = int(number)
+
             print("\n分集名字是：" + movie_fj_name
-                  + ", \n分集集数: " + movie_fj_name[movie_fj_name.index("第") + 1:movie_fj_name.index("集")]
+                  + ", \n分集集数: " + number
                   + ", \n磁力链接：<" + download_url + ">。\n")
+
+            yield insertSubMovieDownloadItem2DB(pid, movie_fj_name, download_url)
+
+        yield insertSubMovieLastestItem2DB(pid, number)
+
+
+# 插入数据到数据库中
+def insertSubInfoItem2DB(pid, movie_name, movie_pic, url, movie_update_time, movie_intro, movie_intro_pic):
+    item = SubInfoItem()
+    item['pid'] = pid
+    item['name'] = movie_name
+    item['pic'] = movie_pic
+    item['url'] = url
+    item['update_time'] = movie_update_time
+    item['intro'] = movie_intro
+    item['capture_pic'] = movie_intro_pic
+    return item
+
+
+def insertSubMovieDownloadItem2DB(pid, fj_name, fj_download_url):
+    item = SubMovieDownloadInfoItem()
+    item['pid'] = pid
+    item['fj_name'] = fj_name
+    item['fj_download_url'] = fj_download_url
+    return item
+
+
+def insertSubMovieLastestItem2DB(pid, fj_number):
+    item = SubMovieLastestInfoItem()
+    item['pid'] = pid
+    item['fj_number'] = fj_number
+    return item
