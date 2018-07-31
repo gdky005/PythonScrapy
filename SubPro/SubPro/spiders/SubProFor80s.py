@@ -3,14 +3,14 @@ from scrapy.spiders import Spider
 from selenium import webdriver
 
 
-class SubPro(Spider):
-    name = "SubPro"
+class SubProFor80s(Spider):
+    name = "SubProFor80s"
     start_urls = [
-        "https://www.80s.tw/ju/22991",
+        "https://www.80s.tw/ju/23161",
     ]
 
     def __init__(self):
-        super(SubPro, self).__init__()
+        super(SubProFor80s, self).__init__()
 
     def parse(self, response):
         content = response.body.decode("utf-8")
