@@ -7,7 +7,7 @@ from DBHelper import insertSubInfoItem2DB, insertSubMovieDownloadItem2DB, insert
 class SubProFor80s(Spider):
     name = "SubProFor80s"
     start_urls = [
-        "https://www.80s.tw/ju/23161",
+        "https://www.80s.tw/ju/22949",
     ]
 
     def __init__(self):
