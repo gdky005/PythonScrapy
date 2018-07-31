@@ -9,18 +9,25 @@ import pymysql
 from SubPro.items import SubInfoItem, SubMovieDownloadInfoItem, SubMovieLastestInfoItem
 
 
-class SubInfoPipeline(object):
+class BaseSubProPipeline(object):
     host = Globle.Constant.host
     port = Globle.Constant.port
     user = Globle.Constant.user
     password = Globle.Constant.password
     database_name = Globle.Constant.database_name
-    table_name = "Subscribe_submovieinfo"
+    table_name = Globle.Constant.table_name
     charset = Globle.Constant.charset
 
     def __init__(self):
         self.conn = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.password,
                                     db=self.database_name, charset=self.charset)
+
+    def close_spider(self, spider):
+        self.conn.close()
+
+
+class SubInfoPipeline(BaseSubProPipeline):
+    table_name = "Subscribe_submovieinfo"
 
     def process_item(self, item, spider):
         try:
@@ -52,27 +59,11 @@ class SubInfoPipeline(object):
             print("SubInfoPipeline process_item 出现异常:" + e.__str__())
             return item
 
-    def close_spider(self, spider):
-        self.conn.close()
 
-
-class SubMovieDownloadPipeline(object):
-    host = Globle.Constant.host
-    port = Globle.Constant.port
-    user = Globle.Constant.user
-    password = Globle.Constant.password
-    database_name = Globle.Constant.database_name
+class SubMovieDownloadPipeline(BaseSubProPipeline):
     table_name = "Subscribe_submoviedownload"
-    charset = Globle.Constant.charset
-
-    def __init__(self):
-        self.conn = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.password,
-                                    db=self.database_name, charset=self.charset)
 
     def process_item(self, item, spider):
-        # if item is None  or item == True or item == False or (item._class != SubMovieDownloadInfoItem):
-        #     return item
-
         try:
             if item is None or item is bool or item._class != SubMovieDownloadInfoItem._class:
                 return item
@@ -102,22 +93,9 @@ class SubMovieDownloadPipeline(object):
             print("SubMovieDownloadPipeline process_item 出现异常:" + e.__str__())
             return item
 
-    def close_spider(self, spider):
-        self.conn.close()
 
-
-class SubMovieLastestPipeline(object):
-    host = Globle.Constant.host
-    port = Globle.Constant.port
-    user = Globle.Constant.user
-    password = Globle.Constant.password
-    database_name = Globle.Constant.database_name
+class SubMovieLastestPipeline(BaseSubProPipeline):
     table_name = "Subscribe_submovielastestinfo"
-    charset = Globle.Constant.charset
-
-    def __init__(self):
-        self.conn = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.password,
-                                    db=self.database_name, charset=self.charset)
 
     def process_item(self, item, spider):
         # if item is None or item == True or item ==False or (item._class != SubMovieLastestInfoItem) :
@@ -147,6 +125,3 @@ class SubMovieLastestPipeline(object):
         except Exception as e:
             print("SubMovieLastestPipeline process_item 出现异常:" + e.__str__())
             return item
-
-    def close_spider(self, spider):
-        self.conn.close()

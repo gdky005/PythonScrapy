@@ -9,5 +9,5 @@ class Constant:
     user = config.get("global", "user")
     password = config.get("global", "password")
     database_name = config.get("global", "database_name")
-    movie_table_name = config.get("global", "table_name")
+    table_name = config.get("global", "table_name")
     charset = config.get("global", "charset")
