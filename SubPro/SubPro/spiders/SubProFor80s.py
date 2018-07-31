@@ -16,6 +16,10 @@ class SubProFor80s(Spider):
         content = response.body.decode("utf-8")
         # print("爬取的内容如下：" + content)
 
+        url = response.url
+        pid = url[url.rindex("/") + 1:url.rindex(".")]
+        print("影片的 Url是：" + response.url + ", pid 是：" + pid)
+
         selector = Selector(text=content)
 
         # 影片图片：
