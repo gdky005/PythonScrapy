@@ -82,14 +82,18 @@ class SubMovieDownloadPipeline(object):
 
             pid = item['pid']
             fj_name = item['fj_name']
+            fj_number = item['fj_number']
+
+            id = pid + fj_number
+
             fj_download_url = item['fj_download_url']
 
             sql = "INSERT INTO " + self.table_name + " (" \
-                                                     "pid_id, fj_name, fj_download_url" \
+                                                     "id, pid_id, fj_name, fj_download_url" \
                                                      ") VALUES (" \
-                                                     "%s, %s, %s" \
+                                                     "%s, %s, %s, %s" \
                                                      ")"
-            cur.execute(sql, (pid, fj_name, fj_download_url))
+            cur.execute(sql, (id, pid, fj_name, fj_download_url))
             cur.close()
             self.conn.commit()
 
@@ -127,14 +131,15 @@ class SubMovieLastestPipeline(object):
             cur = self.conn.cursor()
 
             pid = item['pid']
+            id = pid
             fj_number = item['fj_number']
 
             sql = "INSERT INTO " + self.table_name + " (" \
-                                                     "pid_id, fj_number" \
+                                                     "id, pid_id, fj_number" \
                                                      ") VALUES (" \
-                                                     "%s, %s" \
+                                                     "%s, %s, %s" \
                                                      ")"
-            cur.execute(sql, (pid, fj_number))
+            cur.execute(sql, (id, pid, fj_number))
             cur.close()
             self.conn.commit()
 

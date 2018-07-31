@@ -32,6 +32,7 @@ class SubMovieDownloadInfoItem(scrapy.Item):
     id = Field()
     pid = Field()
     fj_name = Field()
+    fj_number = Field()
     fj_download_url = Field()
 
     pass

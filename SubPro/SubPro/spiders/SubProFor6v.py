@@ -85,9 +85,9 @@ class SubProFor6v(Spider):
                   + ", \n分集集数: " + number
                   + ", \n磁力链接：<" + download_url + ">。\n")
 
-            yield insertSubMovieDownloadItem2DB(pid, movie_fj_name, download_url)
+            yield insertSubMovieDownloadItem2DB(pid, movie_fj_name, number, download_url)
 
-        yield insertSubMovieLastestItem2DB(pid, number)
+        yield insertSubMovieLastestItem2DB(pid, numberIndex)
 
 
 # 插入数据到数据库中
@@ -103,10 +103,11 @@ def insertSubInfoItem2DB(pid, movie_name, movie_pic, url, movie_update_time, mov
     return item
 
 
-def insertSubMovieDownloadItem2DB(pid, fj_name, fj_download_url):
+def insertSubMovieDownloadItem2DB(pid, fj_name, fj_number, fj_download_url):
     item = SubMovieDownloadInfoItem()
     item['pid'] = pid
     item['fj_name'] = fj_name
+    item['fj_number'] = fj_number
     item['fj_download_url'] = fj_download_url
     return item
 
