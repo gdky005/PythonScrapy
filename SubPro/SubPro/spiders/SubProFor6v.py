@@ -1,14 +1,28 @@
-from scrapy import Selector
+import requests
+import scrapy
+from scrapy import Selector, FormRequest
 from scrapy.spiders import Spider
 from DBHelper import insertSubInfoItem2DB, insertSubMovieDownloadItem2DB, insertSubMovieLastestItem2DB
 
 
 class SubProFor6v(Spider):
     name = "SubProFor6v"
-    start_urls = [
-        "http://www.hao6v.com/dlz/2018-06-19/31337.html",
-        # "http://www.hao6v.com/dy/2018-07-30/ZQSRHTS.html",
-    ]
+    # start_urls = [
+    #     # "http://www.hao6v.com/dlz/2018-06-19/31337.html",
+    #     # "http://www.hao6v.com/dlz/2018-08-03/31584.html",
+    #     # "http://www.hao6v.com/dy/2018-07-30/ZQSRHTS.html",
+    #     "http://www.hao6v.com/dlz/2018-07-20/31520.html",
+    #     "http://www.hao6v.com/dlz/2018-08-03/31584.html",
+    # ]
+
+    # 开启后，默认爬取接口中的 url, 参考：https://www.v2ex.com/t/433791
+    def start_requests(self):
+        result = requests.get("http://zkteam.cc/Subscribe/jsonQueryInfo/?des=hao6v")
+        resultData = result.json()["result"]
+
+        for data in resultData:
+            url = data["url"]
+            yield scrapy.Request(url=url, callback=self.parse)
 
     def __init__(self):
         super(SubProFor6v, self).__init__()
@@ -32,11 +46,18 @@ class SubProFor6v(Spider):
 
         # #
         # # 影片介绍：
+        des = ''
         movie_intro = selector.xpath('//div[@id="endText"]/p/text()').extract()
-        if movie_intro.__len__() > 25:
-            movie_intro = movie_intro[31]
-        else:
-            movie_intro = movie_intro[22]
+        try:
+            indexIntro = movie_intro.index("◎简　　介")
+
+            for index in range(len(movie_intro)):
+                if indexIntro < index < movie_intro.__len__() - 1:
+                    des += movie_intro[index]
+        except:
+            pass
+
+        movie_intro = des
 
         #
         # # 影片截图：
@@ -68,9 +89,6 @@ class SubProFor6v(Spider):
 
         numberIndex = 0
         for index, downloadData in enumerate(downloadInfo):
-            if index == 0:
-                continue
-
             # 影片名称：
             movie_fj_name = downloadData.css("a::text").extract()[0].strip()
             # 磁力链接：
@@ -78,12 +96,20 @@ class SubProFor6v(Spider):
 
             number = movie_fj_name[0:movie_fj_name.index(".")]
 
-            if int(number) > numberIndex:
-                numberIndex = int(number)
+            if index == 0 and ".html" in movie_fj_name:
+                continue
 
-            print("\n分集名字是：" + movie_fj_name
-                  + ", \n分集集数: " + number
-                  + ", \n磁力链接：<" + download_url + ">。\n")
+            try:
+                if int(number) > numberIndex:
+                    numberIndex = int(number)
+
+                print("\n分集名字是：" + movie_fj_name
+                      + ", \n分集集数: " + number
+                      + ", \n磁力链接：<" + download_url + ">。\n")
+            except:
+                continue
+
+
 
             yield insertSubMovieDownloadItem2DB(pid, movie_fj_name, number, download_url)
 
