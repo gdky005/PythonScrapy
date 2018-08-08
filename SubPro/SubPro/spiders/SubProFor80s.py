@@ -1,3 +1,5 @@
+import requests
+import scrapy
 from scrapy import Selector
 from scrapy.spiders import Spider
 
@@ -7,8 +9,19 @@ from DBHelper import insertSubInfoItem2DB, insertSubMovieDownloadItem2DB, insert
 class SubProFor80s(Spider):
     name = "SubProFor80s"
     start_urls = [
-        "https://www.80s.tw/dm/23093",
+        # "https://www.80s.tw/dm/23093",
+        # "https://www.80s.tw/dm/23073",
+        "https://www.80s.tw/dm/23173",
     ]
+
+    # 开启后，默认爬取接口中的 url, 参考：https://www.v2ex.com/t/433791
+    def start_requests(self):
+        result = requests.get("http://zkteam.cc/Subscribe/jsonQueryInfo/?des=80s")
+        resultData = result.json()["result"]
+
+        for data in resultData:
+            url = data["url"]
+            yield scrapy.Request(url=url, callback=self.parse)
 
     def __init__(self):
         super(SubProFor80s, self).__init__()
@@ -65,7 +78,7 @@ class SubProFor80s(Spider):
             # 磁力链接：
             download_url = downloadData.css("a::attr(href)").extract()[0].strip()
 
-            number = movie_fj_name[(movie_fj_name.index("第") + 1):movie_fj_name.index("集")]
+            number = movie_fj_name[(movie_fj_name.rindex("第") + 1):movie_fj_name.rindex("集")]
 
             if int(number) > numberIndex:
                 numberIndex = int(number)
