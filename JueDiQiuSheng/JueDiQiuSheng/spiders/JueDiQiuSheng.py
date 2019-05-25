@@ -49,7 +49,7 @@ class JueDiQiuSheng(Spider):
         list = []
         categoryID = ""
 
-        if currentUrl == 'http://www.gamersky.com/z/playbattlegrounds/':
+        if currentUrl == 'https://www.gamersky.com/z/playbattlegrounds/':
             # 葵花宝典
             categoryID = 10002
             queryKHBDData(content, list, categoryID)
@@ -58,27 +58,27 @@ class JueDiQiuSheng(Spider):
             categoryID = 10003
             queryJPTJData(content, list, categoryID)
 
-        if currentUrl == 'http://www.gamersky.com/z/playbattlegrounds/handbook/':
+        if currentUrl == 'https://www.gamersky.com/z/playbattlegrounds/handbook/':
             # 攻略专题
             categoryID = 10004
             queryTopTJData(content, list, categoryID)
 
-        if currentUrl == 'http://www.gamersky.com/z/playbattlegrounds/news/':
+        if currentUrl == 'https://www.gamersky.com/z/playbattlegrounds/news/':
             # 热门资讯
             categoryID = 10005
             queryTopTJData(content, list, categoryID)
 
-        if currentUrl == 'http://www.gamersky.com/z/playbattlegrounds/862094_32615/':
+        if currentUrl == 'https://www.gamersky.com/z/playbattlegrounds/862094_32615/':
             # 游戏更新
             categoryID = 10006
             queryTextItemData(content, list, categoryID)
 
-        if currentUrl == 'http://www.gamersky.com/z/playbattlegrounds/862094_28330/':
+        if currentUrl == 'https://www.gamersky.com/z/playbattlegrounds/862094_28330/':
             # 上手体验
             categoryID = 10007
             queryTextItemData(content, list, categoryID)
 
-        if currentUrl == 'http://www.gamersky.com/z/playbattlegrounds/862094_34214/':
+        if currentUrl == 'https://www.gamersky.com/z/playbattlegrounds/862094_34214/':
             # 游戏解说
             categoryID = 10008
             queryYXJSJData(content, list, categoryID)
