@@ -26,6 +26,8 @@ class JDQSPicUrl(Spider):
         options.add_argument('lang=zh_CN.UTF-8')
         options.add_argument('start-maximized')
 
+        # https://github.com/webdriverio/webdriverio/issues/2631
+        # https://www.cnblogs.com/technologylife/p/5829944.html
         self.driver = webdriver.Chrome("/Users/WangQing/opt/chrome/chromedriver", chrome_options=options)
         # self.driver.maximize_window()
 
@@ -73,7 +75,7 @@ class JDQSPicUrl(Spider):
             i = 0
             while i < 10:
                 self.driver.execute_script("window.scrollBy(0, 200)")
-                time.sleep(1)
+                time.sleep(0.3)
                 i += 1
         except Exception as e:
             pass
