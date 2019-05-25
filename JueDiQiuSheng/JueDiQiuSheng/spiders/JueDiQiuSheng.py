@@ -21,9 +21,13 @@ class JDQSPicUrl(Spider):
     def __init__(self):
         super(JDQSPicUrl, self).__init__()
         # http://blog.csdn.net/cz9025/article/details/70160273
-        self.driver = webdriver.Chrome("/Users/WangQing/opt/chrome/chromedriver")
-        self.driver.maximize_window()
-        # self.driver.set_window_size("1000", "5000")
+
+        options = webdriver.ChromeOptions()
+        options.add_argument('lang=zh_CN.UTF-8')
+        options.add_argument('start-maximized')
+
+        self.driver = webdriver.Chrome("/Users/WangQing/opt/chrome/chromedriver", chrome_options=options)
+        # self.driver.maximize_window()
 
     def start_requests(self):
         params = {'pageCount': '100'}
@@ -69,7 +73,7 @@ class JDQSPicUrl(Spider):
             i = 0
             while i < 10:
                 self.driver.execute_script("window.scrollBy(0, 200)")
-                time.sleep(0.3)
+                time.sleep(1)
                 i += 1
         except Exception as e:
             pass
