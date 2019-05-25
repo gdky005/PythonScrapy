@@ -5,6 +5,7 @@ from scrapy.spiders import Spider
 from selenium import webdriver
 from scrapy import signals
 from scrapy.xlib.pydispatch import dispatcher
+from selenium.webdriver import chrome
 
 from JueDiQiuSheng.items import JDQSItem
 
@@ -26,8 +27,13 @@ class JueDiQiuSheng(Spider):
 
     def __init__(self):
         super(JueDiQiuSheng, self).__init__()
-        self.driver = webdriver.Chrome("/Users/WangQing/opt/chrome/chromedriver")
-        self.driver.maximize_window()
+
+        options = webdriver.ChromeOptions()
+        options.add_argument('lang=zh_CN.UTF-8')
+        options.add_argument('start-maximized')
+
+        self.driver = webdriver.Chrome("/Users/WangQing/opt/chrome/chromedriver", chrome_options=options)
+        # self.driver.maximize_window()
         # dispatcher.connect(self.spider_closed, signals.spider_closed)
         print("当前运行时间是：" + Utils.getCollectionTime())
 
