@@ -1,5 +1,6 @@
 from scrapy import Selector
 from scrapy.spiders import Spider
+import re
 
 
 def getPic(selector):
@@ -32,7 +33,8 @@ def getTitle(selector):
 class ManHua(Spider):
     name = "ManHua"
     start_urls = [
-        "https://www.tohomh123.com/zhegedashutailengao/",
+        "https://www.tohomh123.com/zhegedashutailengao/83.html",
+        # "https://www.tohomh123.com/zhegedashutailengao/",
         # "https://www.tohomh123.com/f-1------updatetime--1.html",
         # "https://www.tohomh123.com/f-1-1-----hits--1.html",
         # "https://www.tohomh123.com",
@@ -48,42 +50,66 @@ class ManHua(Spider):
 
         selector = Selector(text=content)
 
-        pic = selector.css("div.cover").css("img::attr('src')").extract()[0]
-        title = selector.css("div.info").css("h1::text").extract()[0]
-        author = selector.css("div.info").css("p::text").extract()[0]
-        state = selector.css("p.tip").css("span.block")[0].css("span::text").extract()[1]
-        time = selector.css("p.tip").css("span.block")[2].css("span::text").extract()[0]
-        detail = selector.css("p.content").css("p::text").extract()[0]
-
-        category = selector.css("p.tip").css("span.block")[1].css("a::text").extract()
-        tag = selector.css("p.tip").css("span.block")[3].css("a::text").extract()
-
-        print("\n")
-        print("pic->" + pic +
-              ",\ntitle->" + title +
-              ",\nauthor->" + author +
-              ",\nstate->" + state +
-              ",\ntime->" + time +
-              ",\ndetail->" + detail +
-              ",\ncategory->" + category.__str__() +
-              ",\ntag->" + tag.__str__()
-              )
-
-        sort = selector.css("div.left-bar")[0].css("div.detail-list-title").css("a::text").extract()[0] # 倒序
-
-        # todo 这里需要去重处理
-        chapterItem = selector.css("div.left-bar")[0].css("ul.view-win-list.detail-list-select").css("li")
+        chapterItem = selector.css("div.mCustomScrollBox").css("li")
 
         for chapter in chapterItem:
-            chapterName = chapter.css("a::text").extract()[0]
-            chapterName_p = chapter.css("a").css("span::text").extract()[0]
-            chapterUrl = "https://www.tohomh123.com" + chapter.css("a::attr(href)").extract()[0]
+
+            pic = chapter.css("a::attr('href')").extract()[0]
+            picTitle = chapter.css("a::text").extract()[0]
+            picTitle_p = chapter.css("a").css("span::text").extract()[0]
 
             print("\n")
-            print("chapterName->" + chapterName +
-              ",\nchapterName_p->" + chapterName_p +
-              ",\nchapterUrl->" + chapterUrl
-              )
+            print("pic->" + pic +
+                  ",\npicTitle->" + picTitle +
+                  ",\npicTitle_p->" + picTitle_p)
+
+        chapterItem = selector.css("script::text")[4].extract()
+        pattern = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')  # 匹配模式
+        pic = chapterItem.split(";")[9]
+        pic = re.findall(pattern, pic)[0]
+        pic = pic[0:len(pic)-1]
+
+        count = chapterItem.split(";")[5]
+        count = count[count.index("= "):len(count)]
+
+        print("首张图片地址是：" + pic + ", 总共：" + count + " P")
+
+
+        # title = selector.css("div.info").css("h1::text").extract()[0]
+        # author = selector.css("div.info").css("p::text").extract()[0]
+        # state = selector.css("p.tip").css("span.block")[0].css("span::text").extract()[1]
+        # time = selector.css("p.tip").css("span.block")[2].css("span::text").extract()[0]
+        # detail = selector.css("p.content").css("p::text").extract()[0]
+        #
+        # category = selector.css("p.tip").css("span.block")[1].css("a::text").extract()
+        # tag = selector.css("p.tip").css("span.block")[3].css("a::text").extract()
+        #
+        # print("\n")
+        # print("pic->" + pic +
+        #       ",\ntitle->" + title +
+        #       ",\nauthor->" + author +
+        #       ",\nstate->" + state +
+        #       ",\ntime->" + time +
+        #       ",\ndetail->" + detail +
+        #       ",\ncategory->" + category.__str__() +
+        #       ",\ntag->" + tag.__str__()
+        #       )
+        #
+        # sort = selector.css("div.left-bar")[0].css("div.detail-list-title").css("a::text").extract()[0] # 倒序
+        #
+        # # todo 这里需要去重处理
+        # chapterItem = selector.css("div.left-bar")[0].css("ul.view-win-list.detail-list-select").css("li")
+        #
+        # for chapter in chapterItem:
+        #     chapterName = chapter.css("a::text").extract()[0]
+        #     chapterName_p = chapter.css("a").css("span::text").extract()[0]
+        #     chapterUrl = "https://www.tohomh123.com" + chapter.css("a::attr(href)").extract()[0]
+        #
+        #     print("\n")
+        #     print("chapterName->" + chapterName +
+        #       ",\nchapterName_p->" + chapterName_p +
+        #       ",\nchapterUrl->" + chapterUrl
+        #       )
 
 
 # # 获取文章中的主要内容
