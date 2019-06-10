@@ -32,7 +32,8 @@ def getTitle(selector):
 class ManHua(Spider):
     name = "ManHua"
     start_urls = [
-        "https://www.tohomh123.com/f-1------updatetime--1.html",
+        "https://www.tohomh123.com/zhegedashutailengao/",
+        # "https://www.tohomh123.com/f-1------updatetime--1.html",
         # "https://www.tohomh123.com/f-1-1-----hits--1.html",
         # "https://www.tohomh123.com",
         # "http://www.gamersky.com/z/playbattlegrounds/",
@@ -47,25 +48,38 @@ class ManHua(Spider):
 
         selector = Selector(text=content)
 
-        itemSelector = selector.css("dl.cat-list").css("dd")
-        for item in itemSelector:
-            categoryText = item.css("a::text").extract()[0]
-            categoryUrl = "https://www.tohomh123.com" + item.css("dd").css("a::attr('href')").extract()[0]
-            print("\n")
-            print("categoryText->" + categoryText +
-                  ",\ncategoryUrl->" + categoryUrl)
+        pic = selector.css("div.cover").css("img::attr('src')").extract()[0]
+        title = selector.css("div.info").css("h1::text").extract()[0]
+        author = selector.css("div.info").css("p::text").extract()[0]
+        state = selector.css("p.tip").css("span.block")[0].css("span::text").extract()[1]
+        time = selector.css("p.tip").css("span.block")[2].css("span::text").extract()[0]
+        detail = selector.css("p.content").css("p::text").extract()[0]
 
-    # # 获取文章中的主要内容
-    # def getContent(elements):
-    #     subString = ""
-    #     for i in range(len(elements)):
-    #
-    #         if i >= (len(elements) - 2):
-    #             break
-    #
-    #         text = elements[i].extract()
-    #         if "data-src" in text:
-    #             text = text.replace("src=\"http://image.gamersky.com/webimg13/zhuanti/common/blank.png\" data-", "")
-    #         subString += text
-    #         subString += "\n"
-    #     return subString
+        category = selector.css("p.tip").css("span.block")[1].css("a::text").extract()
+        tag = selector.css("p.tip").css("span.block")[3].css("a::text").extract()
+
+        print("\n")
+        print("pic->" + pic +
+              ",\ntitle->" + title +
+              ",\nauthor->" + author +
+              ",\nstate->" + state +
+              ",\ntime->" + time +
+              ",\ndetail->" + detail +
+              ",\ncategory->" + category.__str__() +
+              ",\ntag->" + tag.__str__()
+              )
+
+# # 获取文章中的主要内容
+# def getContent(elements):
+#     subString = ""
+#     for i in range(len(elements)):
+#
+#         if i >= (len(elements) - 2):
+#             break
+#
+#         text = elements[i].extract()
+#         if "data-src" in text:
+#             text = text.replace("src=\"http://image.gamersky.com/webimg13/zhuanti/common/blank.png\" data-", "")
+#         subString += text
+#         subString += "\n"
+#     return subString
