@@ -32,7 +32,8 @@ def getTitle(selector):
 class ManHua(Spider):
     name = "ManHua"
     start_urls = [
-        "https://www.tohomh123.com/f-1-1-----hits--1.html",
+        "https://www.tohomh123.com/f-1------updatetime--1.html",
+        # "https://www.tohomh123.com/f-1-1-----hits--1.html",
         # "https://www.tohomh123.com",
         # "http://www.gamersky.com/z/playbattlegrounds/",
     ]
@@ -46,17 +47,13 @@ class ManHua(Spider):
 
         selector = Selector(text=content)
 
-        itemSelector = selector.css("div.mh-item")
-
+        itemSelector = selector.css("dl.cat-list").css("dd")
         for item in itemSelector:
-            pic = getPic(item)
-            title = getTitle(item)
-            newPageName = getNewPageName(item)
+            categoryText = item.css("a::text").extract()[0]
+            categoryUrl = "https://www.tohomh123.com" + item.css("dd").css("a::attr('href')").extract()[0]
             print("\n")
-            # print("pic->" + pic +
-            #       "title->" + title +
-            #       "newPageName->" + newPageName
-            #       )
+            print("categoryText->" + categoryText +
+                  ",\ncategoryUrl->" + categoryUrl)
 
     # # 获取文章中的主要内容
     # def getContent(elements):
