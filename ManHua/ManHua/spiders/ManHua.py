@@ -69,6 +69,23 @@ class ManHua(Spider):
               ",\ntag->" + tag.__str__()
               )
 
+        sort = selector.css("div.left-bar")[0].css("div.detail-list-title").css("a::text").extract()[0] # 倒序
+
+        # todo 这里需要去重处理
+        chapterItem = selector.css("div.left-bar")[0].css("ul.view-win-list.detail-list-select").css("li")
+
+        for chapter in chapterItem:
+            chapterName = chapter.css("a::text").extract()[0]
+            chapterName_p = chapter.css("a").css("span::text").extract()[0]
+            chapterUrl = "https://www.tohomh123.com" + chapter.css("a::attr(href)").extract()[0]
+
+            print("\n")
+            print("chapterName->" + chapterName +
+              ",\nchapterName_p->" + chapterName_p +
+              ",\nchapterUrl->" + chapterUrl
+              )
+
+
 # # 获取文章中的主要内容
 # def getContent(elements):
 #     subString = ""
