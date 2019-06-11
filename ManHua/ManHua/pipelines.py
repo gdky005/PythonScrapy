@@ -19,15 +19,12 @@ class ManhuaPipeline(object):
         # 给库中插入数据
         cur = self.conn.cursor()
 
-        # todo 请根据这里适配你自己的数据
-        mid = item['mid']
-        url = item['url']
+        picUrl = item['picUrl']
+        newPage = item['newPage']
         name = item['name']
 
-        # todo 请根据这里适配你自己的数据
-        sql = "INSERT INTO " + self.table_name + " (mid, url, name) VALUES (%s, %s, %s)"
-        # todo 请根据这里适配你自己的数据
-        cur.execute(sql, (mid, url, name))
+        sql = "INSERT INTO " + self.table_name + " (picUrl, newPage, name) VALUES (%s, %s, %s)"
+        cur.execute(sql, (picUrl, newPage, name))
         cur.close()
         self.conn.commit()
 

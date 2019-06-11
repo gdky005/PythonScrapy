@@ -9,7 +9,7 @@ def getPic(selector):
         pic = pic.replace("background-image: url(", "")
         pic = pic.replace(")", "")
 
-        print("pic: " + pic)
+        # print("pic: " + pic)
         return pic
 
 
@@ -17,7 +17,7 @@ def getNewPageName(selector):
     # 获取最新一集
     newList = selector.css("p").css("a::text").extract()
     for new in newList:
-        print("最新章节是: " + new)
+        # print("最新章节是: " + new)
         return new
 
 
@@ -25,7 +25,7 @@ def getTitle(selector):
     # 获取标题
     titleList = selector.css("h2").css("a").css("a::attr('title')").extract()
     for title in titleList:
-        print("title: " + title)
+        # print("title: " + title)
         return title
 
 
@@ -53,31 +53,18 @@ class ManHua(Spider):
             title = getTitle(item)
             newPageName = getNewPageName(item)
             print("\n")
-            # print("pic->" + pic +
-            #       "title->" + title +
-            #       "newPageName->" + newPageName
-            #       )
+            print("\npic->" + pic +
+                  "\ntitle->" + title +
+                  "\nnewPageName->" + newPageName
+                  )
+            yield insertData2DB(pic, newPageName, title)
 
-    # # 获取文章中的主要内容
-    # def getContent(elements):
-    #     subString = ""
-    #     for i in range(len(elements)):
-    #
-    #         if i >= (len(elements) - 2):
-    #             break
-    #
-    #         text = elements[i].extract()
-    #         if "data-src" in text:
-    #             text = text.replace("src=\"http://image.gamersky.com/webimg13/zhuanti/common/blank.png\" data-", "")
-    #         subString += text
-    #         subString += "\n"
-    #     return subString
 
 # 插入数据到数据库中
-def insertData2DB(mid, url, name):
+def insertData2DB(picUrl, newPage, name):
     from ManHua.items import ManHuaItem
     item = ManHuaItem()
-    item['mid'] = mid
-    item['url'] = url
+    item['picUrl'] = picUrl
+    item['newPage'] = newPage
     item['name'] = name
     return item
