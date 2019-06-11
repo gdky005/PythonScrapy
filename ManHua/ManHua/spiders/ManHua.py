@@ -69,48 +69,35 @@ class ManHua(Spider):
         mid = mid[length - 8:length]
         print("当前计算的 mid 是：" + mid)
 
-        print("\n")
-        print("pic->" + pic +
-              ",\ntitle->" + title +
-              ",\nauthor->" + author +
-              ",\nstate->" + state +
-              ",\ntime->" + time +
-              ",\ndetail->" + detail +
-              ",\ncategory->" + category.__str__() +
-              ",\ntag->" + tag.__str__()
-              )
+        sort = selector.css("div.left-bar")[0].css("div.detail-list-title").css("a::text").extract()[0] # 倒序
 
-        yield insertData2DB(mid, title, author, pic, state, time, detail, getStringForList(category), getStringForList(tag))
+        chapterItem = selector.css("div.left-bar")[0].css("ul.view-win-list.detail-list-select")[1].css("li")
 
-        # sort = selector.css("div.left-bar")[0].css("div.detail-list-title").css("a::text").extract()[0] # 倒序
-        #
-        # chapterItem = selector.css("div.left-bar")[0].css("ul.view-win-list.detail-list-select")[1].css("li")
-        #
-        # for chapter in chapterItem:
-        #     chapterName = chapter.css("a::text").extract()[0]
-        #     chapterName_p = chapter.css("a").css("span::text").extract()[0]
-        #     chapterUrl = "https://www.tohomh123.com" + chapter.css("a::attr(href)").extract()[0]
-        #
-        #     print("\n")
-        #     print("chapterName->" + chapterName +
-        #       ",\nchapterName_p->" + chapterName_p +
-        #       ",\nchapterUrl->" + chapterUrl
-        #       )
+        for chapter in chapterItem:
+            chapterName = chapter.css("a::text").extract()[0]
+            chapterName_p = chapter.css("a").css("span::text").extract()[0]
+            chapterUrl = "https://www.tohomh123.com" + chapter.css("a::attr(href)").extract()[0]
+
+            count = chapterName_p[chapterName_p.index("（") + 1:chapterName_p.index("P")]
+
+            print("\n")
+            print("chapterName->" + chapterName +
+                  ",\nchapterName_p->" + chapterName_p +
+                  ",\nchapterUrl->" + chapterUrl +
+                  ",\nmid->" + mid
+                  )
+            yield insertData2DB(mid, chapterName, chapterUrl, chapterName_p, count)
 
 
 # 插入数据到数据库中
-def insertData2DB(mid, name, author, picUrl, state, time, detail, category, tag):
+def insertData2DB(mid, name, url, pCount, count):
     from ManHua.items import ManHuaItem
     item = ManHuaItem()
     item['mid'] = mid
     item['name'] = name
-    item['author'] = author
-    item['picUrl'] = picUrl
-    item['state'] = state
-    item['time'] = time
-    item['detail'] = detail
-    item['category'] = category
-    item['tag'] = tag
+    item['url'] = url
+    item['pCount'] = pCount
+    item['count'] = count
     return item
 
 

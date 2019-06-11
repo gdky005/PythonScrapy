@@ -21,17 +21,13 @@ class ManhuaPipeline(object):
 
         mid = item['mid']
         name = item['name']
-        author = item['author']
-        picUrl = item['picUrl']
-        state = item['state']
-        time = item['time']
-        detail = item['detail']
-        category = item['category']
-        tag = item['tag']
+        url = item['url']
+        pCount = item['pCount']
+        count = item['count']
 
-        sql = "INSERT INTO " + self.table_name + "(mid, name, author, picUrl, state, time, detail, category, tag) VALUES (" \
-                                                 "%s, %s, %s, %s, %s, %s, %s, %s, %s) "
-        cur.execute(sql, (mid, name, author, picUrl, state, time, detail, category, tag))
+        sql = "INSERT INTO " + self.table_name + "(mid, name, url, pCount, count) VALUES (" \
+                                                 "%s, %s, %s, %s, %s) "
+        cur.execute(sql, (mid, name, url, pCount, count))
         cur.close()
         self.conn.commit()
 
