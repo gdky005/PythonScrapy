@@ -58,6 +58,17 @@ class ManHua(Spider):
         category = selector.css("p.tip").css("span.block")[1].css("a::text").extract()
         tag = selector.css("p.tip").css("span.block")[3].css("a::text").extract()
 
+        url = response.url
+        url = url[url.index("com/") + 4:url.rindex("/")]
+
+        print("当前计算的 url 是：" + url)
+        mid = hash(url).__str__()
+        print("当前计算的 mid 是：")
+        print(mid)
+        length = len(mid)
+        mid = mid[length - 8:length]
+        print("当前计算的 mid 是：" + mid)
+
         print("\n")
         print("pic->" + pic +
               ",\ntitle->" + title +
@@ -69,42 +80,42 @@ class ManHua(Spider):
               ",\ntag->" + tag.__str__()
               )
 
-        sort = selector.css("div.left-bar")[0].css("div.detail-list-title").css("a::text").extract()[0] # 倒序
+        yield insertData2DB(mid, title, author, pic, state, time, detail, getStringForList(category), getStringForList(tag))
 
-        chapterItem = selector.css("div.left-bar")[0].css("ul.view-win-list.detail-list-select")[1].css("li")
+        # sort = selector.css("div.left-bar")[0].css("div.detail-list-title").css("a::text").extract()[0] # 倒序
+        #
+        # chapterItem = selector.css("div.left-bar")[0].css("ul.view-win-list.detail-list-select")[1].css("li")
+        #
+        # for chapter in chapterItem:
+        #     chapterName = chapter.css("a::text").extract()[0]
+        #     chapterName_p = chapter.css("a").css("span::text").extract()[0]
+        #     chapterUrl = "https://www.tohomh123.com" + chapter.css("a::attr(href)").extract()[0]
+        #
+        #     print("\n")
+        #     print("chapterName->" + chapterName +
+        #       ",\nchapterName_p->" + chapterName_p +
+        #       ",\nchapterUrl->" + chapterUrl
+        #       )
 
-        for chapter in chapterItem:
-            chapterName = chapter.css("a::text").extract()[0]
-            chapterName_p = chapter.css("a").css("span::text").extract()[0]
-            chapterUrl = "https://www.tohomh123.com" + chapter.css("a::attr(href)").extract()[0]
-
-            print("\n")
-            print("chapterName->" + chapterName +
-              ",\nchapterName_p->" + chapterName_p +
-              ",\nchapterUrl->" + chapterUrl
-              )
-
-
-# # 获取文章中的主要内容
-# def getContent(elements):
-#     subString = ""
-#     for i in range(len(elements)):
-#
-#         if i >= (len(elements) - 2):
-#             break
-#
-#         text = elements[i].extract()
-#         if "data-src" in text:
-#             text = text.replace("src=\"http://image.gamersky.com/webimg13/zhuanti/common/blank.png\" data-", "")
-#         subString += text
-#         subString += "\n"
-#     return subString
 
 # 插入数据到数据库中
-def insertData2DB(mid, url, name):
+def insertData2DB(mid, name, author, picUrl, state, time, detail, category, tag):
     from ManHua.items import ManHuaItem
     item = ManHuaItem()
     item['mid'] = mid
-    item['url'] = url
     item['name'] = name
+    item['author'] = author
+    item['picUrl'] = picUrl
+    item['state'] = state
+    item['time'] = time
+    item['detail'] = detail
+    item['category'] = category
+    item['tag'] = tag
     return item
+
+
+def getStringForList(items):
+    data = ''
+    for item in items:
+        data += (item + ",")
+    return data[0:len(data)-1]

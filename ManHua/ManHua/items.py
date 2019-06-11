@@ -12,6 +12,12 @@ from scrapy import Field
 class ManHuaItem(scrapy.Item):
     # define the fields for your item here like:
     mid = Field()
-    url = Field()
     name = Field()
+    author = Field()
+    picUrl = Field()
+    state = Field()
+    time = Field()
+    detail = Field()
+    category = Field()
+    tag = Field()
     pass
