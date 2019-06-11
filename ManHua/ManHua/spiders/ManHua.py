@@ -32,7 +32,7 @@ def getTitle(selector):
 class ManHua(Spider):
     name = "ManHua"
     start_urls = [
-        "https://www.tohomh123.com/zhegedashutailengao/",
+        "https://www.tohomh123.com/zhenhunjie/",
         # "https://www.tohomh123.com/f-1------updatetime--1.html",
         # "https://www.tohomh123.com/f-1-1-----hits--1.html",
         # "https://www.tohomh123.com",
@@ -71,8 +71,7 @@ class ManHua(Spider):
 
         sort = selector.css("div.left-bar")[0].css("div.detail-list-title").css("a::text").extract()[0] # 倒序
 
-        # todo 这里需要去重处理
-        chapterItem = selector.css("div.left-bar")[0].css("ul.view-win-list.detail-list-select").css("li")
+        chapterItem = selector.css("div.left-bar")[0].css("ul.view-win-list.detail-list-select")[1].css("li")
 
         for chapter in chapterItem:
             chapterName = chapter.css("a::text").extract()[0]
