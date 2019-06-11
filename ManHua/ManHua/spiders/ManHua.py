@@ -72,3 +72,12 @@ class ManHua(Spider):
     #         subString += text
     #         subString += "\n"
     #     return subString
+
+# 插入数据到数据库中
+def insertData2DB(mid, url, name):
+    from ManHua.items import ManHuaItem
+    item = ManHuaItem()
+    item['mid'] = mid
+    item['url'] = url
+    item['name'] = name
+    return item

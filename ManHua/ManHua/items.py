@@ -6,9 +6,12 @@
 # https://doc.scrapy.org/en/latest/topics/items.html
 
 import scrapy
+from scrapy import Field
 
 
-class ManhuaItem(scrapy.Item):
+class ManHuaItem(scrapy.Item):
     # define the fields for your item here like:
-    # name = scrapy.Field()
+    mid = Field()
+    url = Field()
+    name = Field()
     pass
