@@ -51,9 +51,14 @@ class ManHua(Spider):
         for item in itemSelector:
             categoryText = item.css("a::text").extract()[0]
             categoryUrl = "https://www.tohomh123.com" + item.css("dd").css("a::attr('href')").extract()[0]
+            categoryId = categoryUrl[categoryUrl.index("/f-") + 2:categoryUrl.index("-----")]
+            categoryId = categoryId.replace("-", "")
+
             print("\n")
             print("categoryText->" + categoryText +
-                  ",\ncategoryUrl->" + categoryUrl)
+                  ",\ncategoryUrl->" + categoryUrl +
+                  ",\ncategoryId->" + categoryId
+                  )
 
     # # 获取文章中的主要内容
     # def getContent(elements):
