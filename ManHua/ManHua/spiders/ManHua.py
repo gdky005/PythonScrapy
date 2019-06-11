@@ -49,28 +49,25 @@ class ManHua(Spider):
 
         itemSelector = selector.css("dl.cat-list").css("dd")
         for item in itemSelector:
-            categoryText = item.css("a::text").extract()[0]
+            categoryName = item.css("a::text").extract()[0]
             categoryUrl = "https://www.tohomh123.com" + item.css("dd").css("a::attr('href')").extract()[0]
             categoryId = categoryUrl[categoryUrl.index("/f-") + 2:categoryUrl.index("-----")]
             categoryId = categoryId.replace("-", "")
 
             print("\n")
-            print("categoryText->" + categoryText +
+            print("categoryText->" + categoryName +
                   ",\ncategoryUrl->" + categoryUrl +
                   ",\ncategoryId->" + categoryId
                   )
 
-    # # 获取文章中的主要内容
-    # def getContent(elements):
-    #     subString = ""
-    #     for i in range(len(elements)):
-    #
-    #         if i >= (len(elements) - 2):
-    #             break
-    #
-    #         text = elements[i].extract()
-    #         if "data-src" in text:
-    #             text = text.replace("src=\"http://image.gamersky.com/webimg13/zhuanti/common/blank.png\" data-", "")
-    #         subString += text
-    #         subString += "\n"
-    #     return subString
+            yield insertData2DB(categoryId, categoryUrl, categoryName)
+
+
+# 插入数据到数据库中
+def insertData2DB(mid, url, name):
+    from ManHua.items import ManHuaItem
+    item = ManHuaItem()
+    item['mid'] = mid
+    item['url'] = url
+    item['name'] = name
+    return item

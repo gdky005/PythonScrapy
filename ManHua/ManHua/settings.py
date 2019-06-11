@@ -13,13 +13,16 @@ BOT_NAME = 'ManHua'
 
 SPIDER_MODULES = ['ManHua.spiders']
 NEWSPIDER_MODULE = 'ManHua.spiders'
+ITEM_PIPELINES = {'ManHua.pipelines.ManhuaPipeline': 800, }
+# ITEM_PIPELINES = {'xxx.pipelines.xxxPipeline': 800, }
+ROBOTSTXT_OBEY = False
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'ManHua (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+# ROBOTSTXT_OBEY = True
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
