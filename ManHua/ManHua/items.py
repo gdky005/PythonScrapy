@@ -12,6 +12,8 @@ from scrapy import Field
 class ManHuaItem(scrapy.Item):
     # define the fields for your item here like:
     mid = Field()
-    url = Field()
-    name = Field()
+    mid2 = Field()
+    picUrl = Field()
+    count = Field()
+    sourceUrl = Field()
     pass

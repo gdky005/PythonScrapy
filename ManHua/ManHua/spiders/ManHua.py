@@ -52,86 +52,47 @@ class ManHua(Spider):
 
         chapterItem = selector.css("div.mCustomScrollBox").css("li")
 
-        for chapter in chapterItem:
-
-            pic = chapter.css("a::attr('href')").extract()[0]
-            picTitle = chapter.css("a::text").extract()[0]
-            picTitle_p = chapter.css("a").css("span::text").extract()[0]
-
-            print("\n")
-            print("pic->" + pic +
-                  ",\npicTitle->" + picTitle +
-                  ",\npicTitle_p->" + picTitle_p)
+        # for chapter in chapterItem:
+        #
+        #     pic = chapter.css("a::attr('href')").extract()[0]
+        #     picTitle = chapter.css("a::text").extract()[0]
+        #     picTitle_p = chapter.css("a").css("span::text").extract()[0]
+        #
+        #     print("\n")
+        #     print("pic->" + pic +
+        #           ",\npicTitle->" + picTitle +
+        #           ",\npicTitle_p->" + picTitle_p)
 
         chapterItem = selector.css("script::text")[4].extract()
         pattern = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')  # 匹配模式
         pic = chapterItem.split(";")[9]
         pic = re.findall(pattern, pic)[0]
-        pic = pic[0:len(pic)-1]
+        pic = pic[0:len(pic) - 1]
 
         count = chapterItem.split(";")[5]
-        count = count[count.index("= "):len(count)]
+        count = count[count.index("= ") + 2:len(count)]
 
-        print("首张图片地址是：" + pic + ", 总共：" + count + " P")
+        url = pic[0:pic.rindex("/")]
+        id2 = url[url.rindex("/") + 1:len(url)]
+        print(id2)
 
+        url = url[0:url.rindex("/")]
+        id1 = url[url.rindex("/") + 1:len(url)]
+        print(id1)
 
-        # title = selector.css("div.info").css("h1::text").extract()[0]
-        # author = selector.css("div.info").css("p::text").extract()[0]
-        # state = selector.css("p.tip").css("span.block")[0].css("span::text").extract()[1]
-        # time = selector.css("p.tip").css("span.block")[2].css("span::text").extract()[0]
-        # detail = selector.css("p.content").css("p::text").extract()[0]
-        #
-        # category = selector.css("p.tip").css("span.block")[1].css("a::text").extract()
-        # tag = selector.css("p.tip").css("span.block")[3].css("a::text").extract()
-        #
-        # print("\n")
-        # print("pic->" + pic +
-        #       ",\ntitle->" + title +
-        #       ",\nauthor->" + author +
-        #       ",\nstate->" + state +
-        #       ",\ntime->" + time +
-        #       ",\ndetail->" + detail +
-        #       ",\ncategory->" + category.__str__() +
-        #       ",\ntag->" + tag.__str__()
-        #       )
-        #
-        # sort = selector.css("div.left-bar")[0].css("div.detail-list-title").css("a::text").extract()[0] # 倒序
-        #
-        # # todo 这里需要去重处理
-        # chapterItem = selector.css("div.left-bar")[0].css("ul.view-win-list.detail-list-select").css("li")
-        #
-        # for chapter in chapterItem:
-        #     chapterName = chapter.css("a::text").extract()[0]
-        #     chapterName_p = chapter.css("a").css("span::text").extract()[0]
-        #     chapterUrl = "https://www.tohomh123.com" + chapter.css("a::attr(href)").extract()[0]
-        #
-        #     print("\n")
-        #     print("chapterName->" + chapterName +
-        #       ",\nchapterName_p->" + chapterName_p +
-        #       ",\nchapterUrl->" + chapterUrl
-        #       )
+        sourceUrl = response.url
 
+        print("首张图片地址是：" + pic + ", 总共：" + count + " P" + ", id1=" + id1 + ", id2=" + id2 + ", sourceUrl=" + sourceUrl)
+        yield insertData2DB(id1, id2, pic, count, sourceUrl)
 
-# # 获取文章中的主要内容
-# def getContent(elements):
-#     subString = ""
-#     for i in range(len(elements)):
-#
-#         if i >= (len(elements) - 2):
-#             break
-#
-#         text = elements[i].extract()
-#         if "data-src" in text:
-#             text = text.replace("src=\"http://image.gamersky.com/webimg13/zhuanti/common/blank.png\" data-", "")
-#         subString += text
-#         subString += "\n"
-#     return subString
 
 # 插入数据到数据库中
-def insertData2DB(mid, url, name):
+def insertData2DB(mid, mid2, picUrl, count, sourceUrl):
     from ManHua.items import ManHuaItem
     item = ManHuaItem()
     item['mid'] = mid
-    item['url'] = url
-    item['name'] = name
+    item['mid2'] = mid2
+    item['picUrl'] = picUrl
+    item['count'] = count
+    item['sourceUrl'] = sourceUrl
     return item
