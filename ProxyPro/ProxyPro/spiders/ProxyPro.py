@@ -26,7 +26,8 @@ class ProxyPro(Spider):
                 ip = td[0]
                 port = td[1]
                 area = td[2]
+                type = td[4]
 
-                print("用户 ip:" + ip + ", port:" + port + ", area:" + area)
+                print("用户 ip:" + ip + ", port:" + port + ", area:" + area + 'type: ' + type)
             except:
                 pass
