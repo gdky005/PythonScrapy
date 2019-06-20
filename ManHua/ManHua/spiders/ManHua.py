@@ -32,7 +32,7 @@ def getTitle(selector):
 class ManHua(Spider):
     name = "ManHua"
     start_urls = [
-        "https://www.tohomh123.com/f-1-1-----hits--1.html",
+        "https://www.tohomh123.com/f-1------updatetime--1.html",
         # "https://www.tohomh123.com",
         # "http://www.gamersky.com/z/playbattlegrounds/",
     ]
