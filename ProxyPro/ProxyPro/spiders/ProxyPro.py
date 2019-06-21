@@ -1,3 +1,4 @@
+import requests
 from scrapy import Selector
 from scrapy.spiders import Spider
 import json
@@ -20,6 +21,8 @@ class ProxyPro(Spider):
         selector = Selector(text=content)
         proxyItem = selector.css("tr.odd")
 
+        print("爬取的个数：\n" + proxyItem.__len__().__str__())
+
         list = []
 
         for item in proxyItem:
@@ -32,15 +35,23 @@ class ProxyPro(Spider):
 
                 print("用户 ip:" + ip + ", port:" + port + ", area:" + area + 'type: ' + type)
 
-                obj = {"type": type, "url": type + "://" + ip + ":" + port}
+                try:
+                    url = type + "://" + ip + ":" + port
+                    obj = {"type": type, "url": url}
 
-                list.append(obj)
-
-                print(obj)
-
+                    proxies = {type: url}
+                    res = requests.get("http://httpbin.org/get", proxies=proxies, timeout=5)
+                    print(res.text)
+                    list.append(obj)
+                    print(obj)
+                except requests.exceptions.Timeout as e:
+                    print(str(e))
+                except:
+                    pass
             except:
                 pass
 
+        print("当前可用 ip 的个数是：" + list.__len__().__str__())
         listStr = str(list).replace("'", "\"")
         print(listStr)
 
