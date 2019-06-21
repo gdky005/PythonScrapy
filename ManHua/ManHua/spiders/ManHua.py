@@ -79,10 +79,11 @@ class ManHua(Spider):
 
             url1 = domain
             print(url1)
+            proxy = url1
 
             print(i)
-            # url = "https://www.tohomh123.com/f-1------updatetime--" + str(i) + ".html"
-            url = "http://httpbin.org/get"
+            url = "https://www.tohomh123.com/f-1------updatetime--" + str(i) + ".html"
+            # url = "http://httpbin.org/get"
             print(url)
             yield scrapy.Request(url=url, meta={'download_timeout': 5, 'proxy': proxy}, callback=self.parse)
 
@@ -90,33 +91,33 @@ class ManHua(Spider):
         content = response.body.decode("utf-8")
         print(content)
 
-        # result = urlparse(response.url)
-        # domain = result[0] + "://" + result[1]
-        # print(domain)
-        #
-        # selector = Selector(text=content)
-        #
-        # itemSelector = selector.css("div.mh-item")
-        #
-        # for item in itemSelector:
-        #     pic = getPic(item)
-        #     title = getTitle(item)
-        #     newPageName = getNewPageName(item)
-        #
-        #     mhPath = getMHUrl(item)
-        #     mid2 = mhPath.replace("/", "")
-        #     mhUrl = domain + mhPath
-        #     mhNewUrl = domain + getMHNewUrl(item)
-        #
-        #     print("\npic->" + pic +
-        #           "\ntitle->" + title +
-        #           "\nmid2->" + mid2 +
-        #           "\nnewPageName->" + newPageName +
-        #           "\nmhUrl->" + mhUrl +
-        #           "\nmhNewUrl->" + mhNewUrl +
-        #           "\n"
-        #           )
-        #     yield insertData2DB(mid2, title, pic, newPageName, mhUrl, mhNewUrl)
+        result = urlparse(response.url)
+        domain = result[0] + "://" + result[1]
+        print(domain)
+
+        selector = Selector(text=content)
+
+        itemSelector = selector.css("div.mh-item")
+
+        for item in itemSelector:
+            pic = getPic(item)
+            title = getTitle(item)
+            newPageName = getNewPageName(item)
+
+            mhPath = getMHUrl(item)
+            mid2 = mhPath.replace("/", "")
+            mhUrl = domain + mhPath
+            mhNewUrl = domain + getMHNewUrl(item)
+
+            print("\npic->" + pic +
+                  "\ntitle->" + title +
+                  "\nmid2->" + mid2 +
+                  "\nnewPageName->" + newPageName +
+                  "\nmhUrl->" + mhUrl +
+                  "\nmhNewUrl->" + mhNewUrl +
+                  "\n"
+                  )
+            yield insertData2DB(mid2, title, pic, newPageName, mhUrl, mhNewUrl)
 
 
 # 插入数据到数据库中
