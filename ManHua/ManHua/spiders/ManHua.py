@@ -1,5 +1,7 @@
+import json
 from urllib.parse import urlparse
 
+import scrapy
 from scrapy import Selector
 from scrapy.spiders import Spider
 
@@ -58,37 +60,63 @@ class ManHua(Spider):
     def __init__(self):
         super(ManHua, self).__init__()
 
+    # def make_requests_from_url(self, url):
+    #     self.logger.debug('Try first time')
+    #     return scrapy.Request(url=url, meta={'download_timeout': 10}, callback=self.parse, dont_filter=False)
+
+    def start_requests(self):
+        # for i in range(1, 377):
+        ipListPath = "/Users/WangQing/PycharmProjects/ScrapyPro/ProxyPro/ipList.txt"
+        f = open(ipListPath)
+        data = f.read()
+        text = json.loads(data)
+
+        for i in range(1, 2):
+            ipIndex = text[i % len(text)]
+
+            scheme = ipIndex["type"]
+            domain = ipIndex["url"]
+
+            url1 = domain
+            print(url1)
+
+            print(i)
+            # url = "https://www.tohomh123.com/f-1------updatetime--" + str(i) + ".html"
+            url = "http://httpbin.org/get"
+            print(url)
+            yield scrapy.Request(url=url, meta={'download_timeout': 5, 'proxy': proxy}, callback=self.parse)
+
     def parse(self, response):
         content = response.body.decode("utf-8")
-        # print(content)
+        print(content)
 
-        result = urlparse(response.url)
-        domain = result[0] + "://" + result[1]
-        print(domain)
-
-        selector = Selector(text=content)
-
-        itemSelector = selector.css("div.mh-item")
-
-        for item in itemSelector:
-            pic = getPic(item)
-            title = getTitle(item)
-            newPageName = getNewPageName(item)
-
-            mhPath = getMHUrl(item)
-            mid2 = mhPath.replace("/", "")
-            mhUrl = domain + mhPath
-            mhNewUrl = domain + getMHNewUrl(item)
-
-            print("\npic->" + pic +
-                  "\ntitle->" + title +
-                  "\nmid2->" + mid2 +
-                  "\nnewPageName->" + newPageName +
-                  "\nmhUrl->" + mhUrl +
-                  "\nmhNewUrl->" + mhNewUrl +
-                  "\n"
-                  )
-            yield insertData2DB(mid2, title, pic, newPageName, mhUrl, mhNewUrl)
+        # result = urlparse(response.url)
+        # domain = result[0] + "://" + result[1]
+        # print(domain)
+        #
+        # selector = Selector(text=content)
+        #
+        # itemSelector = selector.css("div.mh-item")
+        #
+        # for item in itemSelector:
+        #     pic = getPic(item)
+        #     title = getTitle(item)
+        #     newPageName = getNewPageName(item)
+        #
+        #     mhPath = getMHUrl(item)
+        #     mid2 = mhPath.replace("/", "")
+        #     mhUrl = domain + mhPath
+        #     mhNewUrl = domain + getMHNewUrl(item)
+        #
+        #     print("\npic->" + pic +
+        #           "\ntitle->" + title +
+        #           "\nmid2->" + mid2 +
+        #           "\nnewPageName->" + newPageName +
+        #           "\nmhUrl->" + mhUrl +
+        #           "\nmhNewUrl->" + mhNewUrl +
+        #           "\n"
+        #           )
+        #     yield insertData2DB(mid2, title, pic, newPageName, mhUrl, mhNewUrl)
 
 
 # 插入数据到数据库中
