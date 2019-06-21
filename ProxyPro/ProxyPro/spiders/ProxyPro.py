@@ -71,12 +71,12 @@ class ProxyPro(Spider):
 
                     proxies = {scheme: url}
                     # 暂时去除检测功能
-                    # url1 = "http://httpbin.org/get"
-                    # res = requests.get(url1, proxies=proxies, timeout=3)
-                    # print("\n\n >>>>>>>>>[ 代理地址 结果 ]>>>>>>>>>>>>>>>\n  " +
-                    #       url + "->" + str(res.status_code) +
-                    #       "\n >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
-                    #       )
+                    url1 = "http://httpbin.org/get"
+                    res = requests.get(url1, proxies=proxies, timeout=3)
+                    print("\n\n >>>>>>>>>[ 代理地址 结果 ]>>>>>>>>>>>>>>>\n  " +
+                          url + "->" + str(res.status_code) +
+                          "\n >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
+                          )
 
                     # 可以使用就录入，否则放弃
                     print("准备针对域名校验：\n")
