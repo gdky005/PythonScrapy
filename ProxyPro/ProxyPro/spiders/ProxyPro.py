@@ -47,6 +47,8 @@ class ProxyPro(Spider):
                     proxies = {scheme: url}
                     res = requests.get("http://httpbin.org/get", proxies=proxies, timeout=5)
                     print(res.text)
+
+                    print("录入：" + obj.__str__())
                     list.append(obj)
                     print(obj)
                 except requests.exceptions.Timeout as e:
