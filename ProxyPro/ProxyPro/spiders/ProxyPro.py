@@ -45,13 +45,25 @@ class ProxyPro(Spider):
                     obj = {"type": scheme, "url": url}
 
                     proxies = {scheme: url}
-                    res = requests.get("http://httpbin.org/get", proxies=proxies, timeout=5)
-                    print("\n\n >>>>>>>>>[ 代理地址 OK ]>>>>>>>>>>>>>>>\n  " +
+                    url1 = "http://httpbin.org/get"
+                    res = requests.get(url1, proxies=proxies, timeout=5)
+                    print("\n\n >>>>>>>>>[ 代理地址 结果 ]>>>>>>>>>>>>>>>\n  " +
                           url + "->" + str(res.status_code) +
                           "\n >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n"
                           )
 
-                    print("准备针对域名校验：")
+                    print("\n\n准备针对域名校验：\n")
+
+                    url2 = "https://www.tohomh123.com"
+                    res = requests.get(url2, proxies=proxies, timeout=5)
+
+                    print("\n\n >>>>>>>>>[ 域名地址 结果 ]>>>>>>>>>>>>>>>\n  " +
+                          url2 + "->" + str(res.status_code) +
+                          "\n >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n"
+                          )
+
+                    print("\n\n录入符合规则的 IP 地址：\n")
+                    print(url)
                     list.append(obj)
                     # print(obj)
                 except requests.exceptions.Timeout as e:
