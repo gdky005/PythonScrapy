@@ -1,4 +1,6 @@
 import json
+import random
+import time
 from urllib.parse import urlparse
 
 import scrapy
@@ -23,13 +25,16 @@ class ManHua(Spider):
 
     def start_requests(self):
         # for i in range(1, 377):
-        ipListPath = "/Users/WangQing/PycharmProjects/ScrapyPro/ProxyPro/ipList.txt"
+        ipListPath = "/Users/WangQing/Desktop/Scrapy/PythonScrapy/ProxyPro/ipList.txt"
+        # ipListPath = "/Users/WangQing/PycharmProjects/ScrapyPro/ProxyPro/ipList.txt"
         f = open(ipListPath)
         data = f.read()
         text = json.loads(data)
 
-        for i in range(1, 20):
-            ipIndex = text[i % len(text)]
+        for i in range(1, 21):
+        # for i in range(1, 6): // OK!
+            ipIndex = text[random.randint(0, len(text) - 1)]
+            # ipIndex = text[i % len(text)]
 
             scheme = ipIndex["type"]
             domain = ipIndex["url"]
@@ -42,6 +47,8 @@ class ManHua(Spider):
             #            'Connection': 'keep-alive',
             #            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36',
             #            'Referer': 'http://www.tohomh123.com/'}
+
+            # time.sleep(3)
 
             print(i)
             url = "https://www.tohomh123.com/f-1------updatetime--" + str(i) + ".html"
