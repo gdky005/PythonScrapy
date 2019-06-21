@@ -6,49 +6,6 @@ from scrapy import Selector
 from scrapy.spiders import Spider
 
 
-def getPic(selector):
-    # 获取图片
-    picList = selector.css("a").css("p::attr('style')").extract()
-    for pic in picList:
-        pic = pic.replace("background-image: url(", "")
-        pic = pic.replace(")", "")
-
-        # print("pic: " + pic)
-        return pic
-
-
-def getNewPageName(selector):
-    # 获取最新一集
-    newList = selector.css("p").css("a::text").extract()
-    for new in newList:
-        # print("最新章节是: " + new)
-        return new
-
-
-def getTitle(selector):
-    # 获取标题
-    titleList = selector.css("h2").css("a").css("a::attr('title')").extract()
-    for title in titleList:
-        # print("title: " + title)
-        return title
-
-
-def getMHUrl(selector):
-    # 获取漫画的当前 URL
-    mhUrlList = selector.css("a::attr('href')").extract()
-    for mhUrl in mhUrlList:
-        # print("mhUrl: " + mhUrl)
-        return mhUrl
-
-
-def getMHNewUrl(selector):
-    # 获取漫画的最新章节 URL
-    mhNewUrlList = selector.css("div.mh-item-detali").css("p.chapter").css("a::attr('href')").extract()
-    for mhNewUrl in mhNewUrlList:
-        # print("mhNewUrl: " + mhNewUrl)
-        return mhNewUrl
-
-
 class ManHua(Spider):
     name = "ManHua"
     start_urls = [
@@ -70,9 +27,8 @@ class ManHua(Spider):
         f = open(ipListPath)
         data = f.read()
         text = json.loads(data)
-# 6: https://163.204.241.142:9999
-# 7: http://111.226.211.11:8118
-        for i in range(7, 8):
+
+        for i in range(1, 20):
             ipIndex = text[i % len(text)]
 
             scheme = ipIndex["type"]
@@ -137,3 +93,46 @@ def insertData2DB(mid2, name, picUrl, newPageName, mhUrl, mhNewUrl):
     item['mhUrl'] = mhUrl
     item['mhNewUrl'] = mhNewUrl
     return item
+
+
+def getPic(selector):
+    # 获取图片
+    picList = selector.css("a").css("p::attr('style')").extract()
+    for pic in picList:
+        pic = pic.replace("background-image: url(", "")
+        pic = pic.replace(")", "")
+
+        # print("pic: " + pic)
+        return pic
+
+
+def getNewPageName(selector):
+    # 获取最新一集
+    newList = selector.css("p").css("a::text").extract()
+    for new in newList:
+        # print("最新章节是: " + new)
+        return new
+
+
+def getTitle(selector):
+    # 获取标题
+    titleList = selector.css("h2").css("a").css("a::attr('title')").extract()
+    for title in titleList:
+        # print("title: " + title)
+        return title
+
+
+def getMHUrl(selector):
+    # 获取漫画的当前 URL
+    mhUrlList = selector.css("a::attr('href')").extract()
+    for mhUrl in mhUrlList:
+        # print("mhUrl: " + mhUrl)
+        return mhUrl
+
+
+def getMHNewUrl(selector):
+    # 获取漫画的最新章节 URL
+    mhNewUrlList = selector.css("div.mh-item-detali").css("p.chapter").css("a::attr('href')").extract()
+    for mhNewUrl in mhNewUrlList:
+        # print("mhNewUrl: " + mhNewUrl)
+        return mhNewUrl
