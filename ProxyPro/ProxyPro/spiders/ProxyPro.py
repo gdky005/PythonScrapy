@@ -9,7 +9,9 @@ class ProxyPro(Spider):
     name = "ProxyPro"
     start_urls = [
         # "https://www.xicidaili.com",
-        "https://www.xicidaili.com/nn/",
+        "https://www.xicidaili.com/nn/1",
+        "https://www.xicidaili.com/nn/2",
+        "https://www.xicidaili.com/nn/3",
     ]
 
     # def start_requests(self):
@@ -57,13 +59,15 @@ class ProxyPro(Spider):
                     obj = {"type": scheme, "url": url}
 
                     proxies = {scheme: url}
-                    url1 = "http://httpbin.org/get"
-                    res = requests.get(url1, proxies=proxies, timeout=3)
-                    print("\n\n >>>>>>>>>[ 代理地址 结果 ]>>>>>>>>>>>>>>>\n  " +
-                          url + "->" + str(res.status_code) +
-                          "\n >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
-                          )
+                    # 暂时去除检测功能
+                    # url1 = "http://httpbin.org/get"
+                    # res = requests.get(url1, proxies=proxies, timeout=3)
+                    # print("\n\n >>>>>>>>>[ 代理地址 结果 ]>>>>>>>>>>>>>>>\n  " +
+                    #       url + "->" + str(res.status_code) +
+                    #       "\n >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
+                    #       )
 
+                    # 可以使用就录入，否则放弃
                     print("准备针对域名校验：\n")
 
                     url2 = "https://www.tohomh123.com"
@@ -90,6 +94,6 @@ class ProxyPro(Spider):
         listStr = str(list).replace("'", "\"")
         print(listStr)
 
-        fileObject = open('ipList.txt', 'w')
-        fileObject.write(listStr)
+        fileObject = open('ipList.txt', 'a+')
+        fileObject.write(listStr + "\n")
         fileObject.close()
