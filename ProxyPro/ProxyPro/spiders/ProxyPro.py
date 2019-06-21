@@ -31,15 +31,20 @@ class ProxyPro(Spider):
                 ip = td[0]
                 port = td[1]
                 area = td[2]
-                type = str(td[5]).lower()
+                scheme = str(td[5]).lower()
 
-                print("用户 ip:" + ip + ", port:" + port + ", area:" + area + 'type: ' + type)
+                scheme = scheme.replace("\n", "").strip()
+
+                if scheme is None or scheme == "":
+                    scheme = "http"
+
+                print("用户 ip:" + ip + ", port:" + port + ", area:" + area + 'type: ' + scheme)
 
                 try:
-                    url = type + "://" + ip + ":" + port
-                    obj = {"type": type, "url": url}
+                    url = scheme + "://" + ip + ":" + port
+                    obj = {"type": scheme, "url": url}
 
-                    proxies = {type: url}
+                    proxies = {scheme: url}
                     res = requests.get("http://httpbin.org/get", proxies=proxies, timeout=5)
                     print(res.text)
                     list.append(obj)
