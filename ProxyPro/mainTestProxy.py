@@ -2,7 +2,7 @@ import json
 
 import requests
 
-proxies = {'https': 'https://113.121.20.170:9999'}
+# proxies = {'https': 'https://113.121.20.170:9999'}
 # proxies = {'https': 'http://112.85.131.145:9999'}
 # proxies = {'http': 'http://113.124.85.183:9999'}
 # proxies = {'http': 'http://112.85.167.219:9999'}
@@ -15,13 +15,17 @@ data = f.read()
 # print(data)
 
 text = json.loads(data)
-print(text[0]["type"])
-print(text[0]["url"])
+
+index = 9
+
+type = text[index]["type"]
+url = text[index]["url"]
+print(type)
+print(url)
 
 
+proxies = {type: url}
 
+res = requests.get("http://httpbin.org/get", proxies=proxies)
 
-
-# res = requests.get("http://httpbin.org/get", proxies=proxies)
-#
-# print(res.text)
+print(res.text)
