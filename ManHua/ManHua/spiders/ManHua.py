@@ -88,36 +88,17 @@ class ManHua(Spider):
                   "\nmhNewUrl->" + mhNewUrl +
                   "\n"
                   )
+            yield insertData2DB(mid2, title, pic, newPageName, mhUrl, mhNewUrl)
 
-    # # 获取文章中的主要内容
-    # def getContent(elements):
-    #     subString = ""
-    #     for i in range(len(elements)):
-    #
-    #         if i >= (len(elements) - 2):
-    #             break
-    #
-    #         text = elements[i].extract()
-    #         if "data-src" in text:
-    #             text = text.replace("src=\"http://image.gamersky.com/webimg13/zhuanti/common/blank.png\" data-", "")
-    #         subString += text
-    #         subString += "\n"
-    #     return subString
 
 # 插入数据到数据库中
-def insertData2DB(mid, url, name):
+def insertData2DB(mid2, name, picUrl, newPageName, mhUrl, mhNewUrl):
     from ManHua.items import ManHuaItem
-
-    # id = models.IntegerField(primary_key=True).auto_created
-    # mid2 = models.TextField()
-    # name = models.TextField()
-    # picUrl = models.TextField()
-    # newPageName = models.TextField()
-    # mhUrl = models.TextField()
-    # mhNewUrl = models.TextField()
-
     item = ManHuaItem()
-    item['mid'] = mid
-    item['url'] = url
+    item['mid2'] = mid2
     item['name'] = name
+    item['picUrl'] = picUrl
+    item['newPageName'] = newPageName
+    item['mhUrl'] = mhUrl
+    item['mhNewUrl'] = mhNewUrl
     return item
