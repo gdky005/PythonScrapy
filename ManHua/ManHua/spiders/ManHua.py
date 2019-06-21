@@ -7,6 +7,8 @@ import scrapy
 from scrapy import Selector
 from scrapy.spiders import Spider
 
+from Utils import getHashCode
+
 
 class ManHua(Spider):
     name = "ManHua"
@@ -27,14 +29,18 @@ class ManHua(Spider):
         # for i in range(1, 377):
         ipListPath = "/Users/WangQing/Desktop/Scrapy/PythonScrapy/ProxyPro/ipList.txt"
         # ipListPath = "/Users/WangQing/PycharmProjects/ScrapyPro/ProxyPro/ipList.txt"
+        # ipListPath = "/Users/WangQing/PycharmProjects/ScrapyPro/ProxyPro/ipList_kuai.txt"
         f = open(ipListPath)
         data = f.read()
         text = json.loads(data)
 
-        for i in range(1, 21):
+        for i in range(1, 2):
+        # for i in range(1, 21):
+        # for i in range(21, 51):
+        # for i in range(21, 31):
         # for i in range(1, 6): // OK!
-            ipIndex = text[random.randint(0, len(text) - 1)]
-            # ipIndex = text[i % len(text)]
+        #     ipIndex = text[random.randint(0, len(text) - 1)]
+            ipIndex = text[i % len(text)]
 
             scheme = ipIndex["type"]
             domain = ipIndex["url"]
@@ -75,24 +81,27 @@ class ManHua(Spider):
 
             mhPath = getMHUrl(item)
             mid2 = mhPath.replace("/", "")
+            mid = getHashCode(mid2)
             mhUrl = domain + mhPath
             mhNewUrl = domain + getMHNewUrl(item)
 
             print("\npic->" + pic +
                   "\ntitle->" + title +
                   "\nmid2->" + mid2 +
+                  "\nmid->" + str(mid) +
                   "\nnewPageName->" + newPageName +
                   "\nmhUrl->" + mhUrl +
                   "\nmhNewUrl->" + mhNewUrl +
                   "\n"
                   )
-            yield insertData2DB(mid2, title, pic, newPageName, mhUrl, mhNewUrl)
+            yield insertData2DB(mid, mid2, title, pic, newPageName, mhUrl, mhNewUrl)
 
 
 # 插入数据到数据库中
-def insertData2DB(mid2, name, picUrl, newPageName, mhUrl, mhNewUrl):
+def insertData2DB(mid, mid2, name, picUrl, newPageName, mhUrl, mhNewUrl):
     from ManHua.items import ManHuaItem
     item = ManHuaItem()
+    item['mid'] = mid
     item['mid2'] = mid2
     item['name'] = name
     item['picUrl'] = picUrl

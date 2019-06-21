@@ -19,6 +19,7 @@ class ManhuaPipeline(object):
         # 给库中插入数据
         cur = self.conn.cursor()
 
+        mid = item['mid']
         mid2 = item['mid2']
         name = item['name']
         picUrl = item['picUrl']
@@ -26,13 +27,23 @@ class ManhuaPipeline(object):
         mhUrl = item['mhUrl']
         mhNewUrl = item['mhNewUrl']
 
-        sql = "INSERT INTO " + self.table_name + " (mid2, name, picUrl, newPageName, mhUrl, mhNewUrl) VALUES (%s, %s, %s, %s, %s, %s)"
-        # todo 请根据这里适配你自己的数据
-        cur.execute(sql, (mid2, name, picUrl, newPageName, mhUrl, mhNewUrl))
-        cur.close()
-        self.conn.commit()
+        try:
+            sql = "INSERT INTO " + self.table_name + "(mid, mid2, name, picUrl, newPageName, mhUrl, mhNewUrl) VALUES " \
+                                                     "(%s, %s, %s, %s, %s, %s, %s) "
+            cur.execute(sql, (mid, mid2, name, picUrl, newPageName, mhUrl, mhNewUrl))
+            cur.close()
+            self.conn.commit()
 
-        return item
+            return item
+        except Exception as e:
+            args = e.args
+            errorCode = args[0]
+            errorMsg = args[1]
+            if 1062 == errorCode:
+                print("\n『>>>>>>>>> mid 键重复，无需处理：" + errorMsg + "<<<<<<< 』\n\n")
+            else:
+                print("异常原因：" + str(e))
+            pass
 
     def close_spider(self):
         self.conn.close()
