@@ -8,10 +8,10 @@ import json
 class ProxyPro(Spider):
     name = "ProxyPro"
     start_urls = [
-        # "https://www.xicidaili.com",
-        "https://www.xicidaili.com/nn/1",
-        "https://www.xicidaili.com/nn/2",
-        "https://www.xicidaili.com/nn/3",
+        # "https://www.xicidaili.com/nn/",
+        "http://www.xiladaili.com/gaoni/",
+        "https://www.kuaidaili.com/free/",
+        "http://www.nimadaili.com/gaoni/",
     ]
 
     # def start_requests(self):
@@ -25,21 +25,26 @@ class ProxyPro(Spider):
 
     def parse(self, response):
         content = response.body.decode('utf-8')
-
+        url = response.url
+        print(url)
         # print(content)
 
         content = content
         # print("爬取的内容如下：" + content)
+        list = []
 
         selector = Selector(text=content)
+
+        if ("xicidaili" in url):
+            self.getXiCi(list, selector)
+
+    def getXiCi(self, list, selector):
         proxyItem = selector.css("tr.odd")
-
         print("爬取的个数：\n" + proxyItem.__len__().__str__())
-
-        list = []
         availableIpCount = 0
-
+        count = 0
         for item in proxyItem:
+            count = count + 1
             try:
                 td = item.css("td").css("td::text").extract()
                 ip = td[0]
@@ -79,7 +84,7 @@ class ProxyPro(Spider):
                           )
 
                     availableIpCount = availableIpCount + 1
-                    print("录入符合规则的 IP 地址： " + str(availableIpCount) + "\n\n\n")
+                    print("录入符合规则的 IP 地址： " + str(availableIpCount) + "/" + str(count) + "\n\n\n")
                     print(url)
                     list.append(obj)
                     # print(obj)
@@ -89,11 +94,9 @@ class ProxyPro(Spider):
                     pass
             except:
                 pass
-
         print("当前可用 ip 的个数是：" + list.__len__().__str__())
         listStr = str(list).replace("'", "\"")
         print(listStr)
-
-        fileObject = open('ipList.txt', 'a+')
+        fileObject = open('ipList_xc.txt', 'a+')
         fileObject.write(listStr + "\n")
         fileObject.close()
