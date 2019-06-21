@@ -13,7 +13,7 @@ class ProxyPro(Spider):
     def parse(self, response):
         content = response.body.decode('utf-8')
 
-        print(content)
+        # print(content)
 
         content = content
         # print("爬取的内容如下：" + content)
@@ -38,7 +38,7 @@ class ProxyPro(Spider):
                 if scheme is None or scheme == "":
                     scheme = "http"
 
-                print("用户 ip:" + ip + ", port:" + port + ", area:" + area + 'type: ' + scheme)
+                # print("用户 ip:" + ip + ", port:" + port + ", area:" + area + 'type: ' + scheme)
 
                 try:
                     url = scheme + "://" + ip + ":" + port
@@ -46,11 +46,14 @@ class ProxyPro(Spider):
 
                     proxies = {scheme: url}
                     res = requests.get("http://httpbin.org/get", proxies=proxies, timeout=5)
-                    print(res.text)
+                    print("\n\n >>>>>>>>>[ 代理地址 OK ]>>>>>>>>>>>>>>>\n  " +
+                          url + "->" + str(res.status_code) +
+                          "\n >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n"
+                          )
 
-                    print("录入：" + obj.__str__())
+                    print("准备针对域名校验：")
                     list.append(obj)
-                    print(obj)
+                    # print(obj)
                 except requests.exceptions.Timeout as e:
                     print(str(e))
                 except:
