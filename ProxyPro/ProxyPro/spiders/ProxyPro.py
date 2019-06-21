@@ -1,4 +1,5 @@
 import requests
+import scrapy
 from scrapy import Selector
 from scrapy.spiders import Spider
 import json
@@ -7,8 +8,18 @@ import json
 class ProxyPro(Spider):
     name = "ProxyPro"
     start_urls = [
+        # "https://www.xicidaili.com",
         "https://www.xicidaili.com/nn/",
     ]
+
+    # def start_requests(self):
+    #     for i in range(1, 2):
+    #         # url = "https://www.xicidaili.com/nn/" + str(i)
+    #         # url = "https://www.xicidaili.com/nt/" + str(i)
+    #         url = "https://www.xicidaili.com/wt/" + str(i)
+    #         url = "https://www.xicidaili.com/" + str(i)
+    #         print(url)
+    #         yield scrapy.Request(url=url,  callback=self.parse)
 
     def parse(self, response):
         content = response.body.decode('utf-8')
@@ -24,6 +35,7 @@ class ProxyPro(Spider):
         print("爬取的个数：\n" + proxyItem.__len__().__str__())
 
         list = []
+        availableIpCount = 0
 
         for item in proxyItem:
             try:
@@ -46,23 +58,24 @@ class ProxyPro(Spider):
 
                     proxies = {scheme: url}
                     url1 = "http://httpbin.org/get"
-                    res = requests.get(url1, proxies=proxies, timeout=5)
+                    res = requests.get(url1, proxies=proxies, timeout=3)
                     print("\n\n >>>>>>>>>[ 代理地址 结果 ]>>>>>>>>>>>>>>>\n  " +
                           url + "->" + str(res.status_code) +
-                          "\n >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n"
+                          "\n >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"
                           )
 
-                    print("\n\n准备针对域名校验：\n")
+                    print("准备针对域名校验：\n")
 
                     url2 = "https://www.tohomh123.com"
                     res = requests.get(url2, proxies=proxies, timeout=5)
 
-                    print("\n\n >>>>>>>>>[ 域名地址 结果 ]>>>>>>>>>>>>>>>\n  " +
+                    print("\n >>>>>>>>>[ 域名地址 结果 ]>>>>>>>>>>>>>>>\n  " +
                           url2 + "->" + str(res.status_code) +
                           "\n >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n"
                           )
 
-                    print("\n\n录入符合规则的 IP 地址：\n")
+                    availableIpCount = availableIpCount + 1
+                    print("录入符合规则的 IP 地址： " + str(availableIpCount) + "\n\n\n")
                     print(url)
                     list.append(obj)
                     # print(obj)
