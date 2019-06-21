@@ -52,7 +52,7 @@ def getMHNewUrl(selector):
 class ManHua(Spider):
     name = "ManHua"
     start_urls = [
-        "https://www.tohomh123.com/f-1------updatetime--377.html",
+        "https://www.tohomh123.com/f-1------updatetime--1.html",
         # "https://www.tohomh123.com",
         # "http://www.gamersky.com/z/playbattlegrounds/",
     ]
@@ -60,9 +60,9 @@ class ManHua(Spider):
     def __init__(self):
         super(ManHua, self).__init__()
 
-    # def make_requests_from_url(self, url):
-    #     self.logger.debug('Try first time')
-    #     return scrapy.Request(url=url, meta={'download_timeout': 10}, callback=self.parse, dont_filter=False)
+    def make_requests_from_url(self, url):
+        self.logger.debug('Try first time')
+        return scrapy.Request(url=url, meta={'download_timeout': 10}, callback=self.parse, dont_filter=False)
 
     def start_requests(self):
         # for i in range(1, 377):
@@ -70,8 +70,9 @@ class ManHua(Spider):
         f = open(ipListPath)
         data = f.read()
         text = json.loads(data)
-
-        for i in range(1, 2):
+# 6: https://163.204.241.142:9999
+# 7: http://111.226.211.11:8118
+        for i in range(7, 8):
             ipIndex = text[i % len(text)]
 
             scheme = ipIndex["type"]
@@ -81,15 +82,20 @@ class ManHua(Spider):
             print(url1)
             proxy = url1
 
+            # headers = {'Host': 'tohomh123.com',
+            #            'Connection': 'keep-alive',
+            #            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36',
+            #            'Referer': 'http://www.tohomh123.com/'}
+
             print(i)
             url = "https://www.tohomh123.com/f-1------updatetime--" + str(i) + ".html"
             # url = "http://httpbin.org/get"
             print(url)
-            yield scrapy.Request(url=url, meta={'download_timeout': 5, 'proxy': proxy}, callback=self.parse)
+            yield scrapy.Request(url=url, meta={'download_timeout': 10, 'proxy': proxy}, callback=self.parse)
 
     def parse(self, response):
         content = response.body.decode("utf-8")
-        print(content)
+        # print(content)
 
         result = urlparse(response.url)
         domain = result[0] + "://" + result[1]
