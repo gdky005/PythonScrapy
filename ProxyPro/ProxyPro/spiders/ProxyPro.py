@@ -9,8 +9,8 @@ class ProxyPro(Spider):
     name = "ProxyPro"
     start_urls = [
         # "https://www.xicidaili.com/nn/",
-        # "http://www.xiladaili.com/gaoni/",
-        # "https://www.kuaidaili.com/free/",
+        "http://www.xiladaili.com/gaoni/",
+        "https://www.kuaidaili.com/free/",
         "http://www.nimadaili.com/gaoni/",
     ]
 
