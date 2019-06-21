@@ -107,6 +107,15 @@ class ManHua(Spider):
 # 插入数据到数据库中
 def insertData2DB(mid, url, name):
     from ManHua.items import ManHuaItem
+
+    # id = models.IntegerField(primary_key=True).auto_created
+    # mid2 = models.TextField()
+    # name = models.TextField()
+    # picUrl = models.TextField()
+    # newPageName = models.TextField()
+    # mhUrl = models.TextField()
+    # mhNewUrl = models.TextField()
+
     item = ManHuaItem()
     item['mid'] = mid
     item['url'] = url
