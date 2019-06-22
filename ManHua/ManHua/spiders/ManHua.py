@@ -58,10 +58,12 @@ class ManHua(Spider):
             # time.sleep(1)
 
             print(i)
-            url = "https://www.tohomh123.com/f-1------updatetime--" + str(i) + ".html"
+            url = "http://zkteam.cc/manhua/f-1------updatetime--1.html"
+            # url = "https://www.tohomh123.com/f-1------updatetime--" + str(i) + ".html"
             # url = "http://httpbin.org/get"
             print(url)
-            yield scrapy.Request(url=url, meta={'download_timeout': 10, 'proxy': proxy}, callback=self.parse)
+            yield scrapy.Request(url=url, meta={'download_timeout': 10}, callback=self.parse)
+            # yield scrapy.Request(url=url, meta={'download_timeout': 10, 'proxy': proxy}, callback=self.parse)
 
     def parse(self, response):
         content = response.body.decode("utf-8")
