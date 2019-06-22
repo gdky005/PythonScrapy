@@ -1,6 +1,8 @@
 from scrapy import Selector
 from scrapy.spiders import Spider
 
+from Utils import getHashCode
+
 
 def getPic(selector):
     # 获取图片
@@ -53,21 +55,24 @@ class ManHua(Spider):
             categoryUrl = "https://www.tohomh123.com" + item.css("dd").css("a::attr('href')").extract()[0]
             categoryId = categoryUrl[categoryUrl.index("/f-") + 2:categoryUrl.index("-----")]
             categoryId = categoryId.replace("-", "")
+            mid = getHashCode(categoryName)
 
             print("\n")
             print("categoryText->" + categoryName +
                   ",\ncategoryUrl->" + categoryUrl +
-                  ",\ncategoryId->" + categoryId
+                  ",\nmid->" + str(mid) +
+                  ",\ncategoryId->" + str(categoryId)
                   )
 
-            yield insertData2DB(categoryId, categoryUrl, categoryName)
+            yield insertData2DB(mid, categoryId, categoryUrl, categoryName)
 
 
 # 插入数据到数据库中
-def insertData2DB(mid, url, name):
+def insertData2DB(mid, mid2, url, name):
     from ManHua.items import ManHuaItem
     item = ManHuaItem()
     item['mid'] = mid
+    item['mid2'] = mid2
     item['url'] = url
     item['name'] = name
     return item

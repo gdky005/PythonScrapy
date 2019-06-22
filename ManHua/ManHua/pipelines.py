@@ -27,11 +27,12 @@ class ManhuaPipeline(object):
         cur = self.conn.cursor()
 
         mid = item['mid']
+        mid2 = item['mid2']
         url = item['url']
         name = item['name']
 
-        sql = "INSERT INTO " + self.table_name + " (mid, url, name) VALUES (%s, %s, %s)"
-        cur.execute(sql, (mid, url, name))
+        sql = "INSERT INTO " + self.table_name + " (mid, mid2, url, name) VALUES (%s, %s, %s, %s)"
+        cur.execute(sql, (mid, mid2, url, name))
         cur.close()
         self.conn.commit()
 
