@@ -34,6 +34,7 @@ def getTitle(selector):
 class ManHua(Spider):
     name = "ManHua"
     start_urls = [
+        # "http://127.0.0.1:8081/chaojiweixin",
         "https://www.tohomh123.com/zhenhunjie/",
         # "https://www.tohomh123.com/f-1------updatetime--1.html",
         # "https://www.tohomh123.com/f-1-1-----hits--1.html",
@@ -75,8 +76,15 @@ class ManHua(Spider):
 
         tag = selector.css("p.tip").css("span.block")[3].css("a::text").extract() # <class 'list'>: ['镇魂', '恶灵', '守护']
 
-        url = response.url
-        urlMid = url[url.index("com/") + 4:url.rindex("/")] #'zhenhunjie'
+        url = response.url.replace("http://127.0.0.1:8081", "https://www.tohomh123.com")
+
+        if url[len(url) - 1] == "/":
+            urlMid = url[url.index("com/") + 4:url.rindex("/")]  # 'zhenhunjie'
+            # urlMid = url[url.index("com/") + 4:url.rindex("/")] #'zhenhunjie'
+        else:
+            urlMid = url[url.index("com/") + 4:]  # 'zhenhunjie'
+
+
         print("当前计算的 url 是：" + urlMid)
         mid = getHashCode(urlMid)
         print("当前计算 " + urlMid + " 的 mid 是：" + str(mid))
