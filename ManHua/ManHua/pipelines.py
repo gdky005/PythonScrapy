@@ -33,13 +33,25 @@ class ManhuaPipeline(object):
         remind = item['remind']
         url = item['url']
         categoryIdList = item['categoryIdList']
+        try:
 
-        sql = "INSERT INTO " + self.table_name + "(mid, name, author, picUrl, state, stateId, remind, time, detail, " \
-                                                 "url, category, categoryIdList, tag) VALUES (" \
-                                                 "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) "
-        cur.execute(sql, (mid, name, author, picUrl, state, stateId, remind, time, detail, url, category, categoryIdList, tag))
-        cur.close()
-        self.conn.commit()
+            sql = "INSERT INTO " + self.table_name + "(mid, name, author, picUrl, state, stateId, remind, time, detail, " \
+                                                     "url, category, categoryIdList, tag) VALUES (" \
+                                                     "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) "
+            cur.execute(sql, (mid, name, author, picUrl, state, stateId, remind, time, detail, url, category, categoryIdList, tag))
+            cur.close()
+            self.conn.commit()
+        except Exception as e:
+            args = e.args
+            errorCode = args[0]
+            errorMsg = args[1]
+            if 1062 == errorCode:
+                print(
+                    "\n『>>>>>>>>> mid 键重复，name=" + name + ", mid=" + str(
+                        mid) + "无需处理：" + errorMsg + "<<<<<<< 』\n\n")
+            else:
+                print("异常原因：" + str(e))
+            pass
 
         return item
 
