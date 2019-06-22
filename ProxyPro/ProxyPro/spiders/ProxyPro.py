@@ -11,7 +11,7 @@ class ProxyPro(Spider):
         "https://www.xicidaili.com/nn/",
         # "http://www.xiladaili.com/gaoni/",
         # "https://www.kuaidaili.com/free/",
-        # "http://www.nimadaili.com/gaoni/",
+        "http://www.nimadaili.com/gaoni/",
     ]
 
     # def start_requests(self):
@@ -35,15 +35,8 @@ class ProxyPro(Spider):
 
         selector = Selector(text=content)
 
-        # if "xicidaili" in url:
-        #     self.getXiCi(list, selector)
-        #
-        # if "kuaidaili" in url:
-        #     self.getKuai(list, selector)
-
         proxyItem = selector.css("tbody").css("tr")
-
-        if "xicidaili" in url:
+        if self.isXiCi(url):
             proxyItem = selector.css("tr.odd")
 
         print("爬取的个数：\n" + proxyItem.__len__().__str__())
@@ -60,16 +53,16 @@ class ProxyPro(Spider):
             countList[1] = countList[1] + 1
             td = item.css("td::text").extract()
 
-            if 2 == countList[1]:
-                break
+            # if 2 == countList[1]:
+            #     break
 
-                # if "nimadaili" in url:
-                #     fileName = "ipList_nima.txt"
-                #     self.getNiMa(list, td, countList)
-                # if "kuaidaili" in url:
-                #     fileName = "ipList_kuai.txt"
-                #     self.getKuai(list, td, countList)
-            if "xicidaili" in url:
+            if "nimadaili" in url:
+                fileName = "ipList_nima.txt"
+                self.getNiMa(list, td, countList)
+            if "kuaidaili" in url:
+                fileName = "ipList_kuai.txt"
+                self.getKuai(list, td, countList)
+            if self.isXiCi(url):
                 fileName = "ipList_xici.txt"
                 self.getXiCi(list, td, countList)
 
@@ -79,6 +72,9 @@ class ProxyPro(Spider):
         fileObject = open(fileName, 'w+')
         fileObject.write(listStr + "\n")
         fileObject.close()
+
+    def isXiCi(self, url):
+        return "xicidaili" in url
 
     def getXiCi(self, list, td, countList):
         ip = td[0]
