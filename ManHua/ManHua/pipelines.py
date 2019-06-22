@@ -29,9 +29,15 @@ class ManhuaPipeline(object):
         category = item['category']
         tag = item['tag']
 
-        sql = "INSERT INTO " + self.table_name + "(mid, name, author, picUrl, state, time, detail, category, tag) VALUES (" \
-                                                 "%s, %s, %s, %s, %s, %s, %s, %s, %s) "
-        cur.execute(sql, (mid, name, author, picUrl, state, time, detail, category, tag))
+        stateId = item['stateId']
+        remind = item['remind']
+        url = item['url']
+        categoryIdList = item['categoryIdList']
+
+        sql = "INSERT INTO " + self.table_name + "(mid, name, author, picUrl, state, stateId, remind, time, detail, " \
+                                                 "url, category, categoryIdList, tag) VALUES (" \
+                                                 "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) "
+        cur.execute(sql, (mid, name, author, picUrl, state, stateId, remind, time, detail, url, category, categoryIdList, tag))
         cur.close()
         self.conn.commit()
 

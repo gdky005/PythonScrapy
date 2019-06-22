@@ -16,8 +16,12 @@ class ManHuaItem(scrapy.Item):
     author = Field()
     picUrl = Field()
     state = Field()
+    stateId = Field()
+    remind = Field()
     time = Field()
     detail = Field()
     category = Field()
+    categoryIdList = Field()
     tag = Field()
+    url = Field()
     pass
