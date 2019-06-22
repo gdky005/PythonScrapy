@@ -39,16 +39,21 @@ def getFile(url1, header, proxies1):
 
 
 def getJson(ipListPath):
-    global text
-    f = open(ipListPath)
-    data = f.read()
-    text = json.loads(data)
-    return text
+    try:
+        global text
+        f = open(ipListPath)
+        data = f.read()
+        text = json.loads(data)
+        return text
+    except:
+        pass
+
+    return None
 
 
 ipListPath1 = "/Users/WangQing/PycharmProjects/ScrapyPro/ProxyPro/ipList_nima.txt"
 ipListPath2 = "/Users/WangQing/PycharmProjects/ScrapyPro/ProxyPro/ipList_xici.txt"
-ipListPath3 = "/Users/WangQing/PycharmProjects/ScrapyPro/ProxyPro/manhua/new_avilable_ip.txt"
+ipListPath3 = "/Users/WangQing/PycharmProjects/ScrapyPro/ProxyPro/new_avilable_ip.txt"
 json1 = getJson(ipListPath1)
 json2 = getJson(ipListPath2)
 json3 = getJson(ipListPath3)
@@ -146,6 +151,6 @@ for data in resultList:
 print("可用的 ip 列表是：" + getStr(jsonListNew) + "/" + getStr(jsonList))
 
 fileName = "new_avilable_ip.txt"
-fileObject = open("/Users/WangQing/PycharmProjects/ScrapyPro/ProxyPro/manhua/" + fileName, 'w+')
+fileObject = open("/Users/WangQing/PycharmProjects/ScrapyPro/ProxyPro/" + fileName, 'w+')
 fileObject.write(str(jsonListNew).replace("'", "\"") + "\n")
 fileObject.close()
