@@ -1,6 +1,8 @@
 from scrapy import Selector
 from scrapy.spiders import Spider
 
+from Utils import getHashCode
+
 
 def getPic(selector):
     # 获取图片
@@ -62,12 +64,7 @@ class ManHua(Spider):
         url = url[url.index("com/") + 4:url.rindex("/")]
 
         print("当前计算的 url 是：" + url)
-        mid = hash(url).__str__()
-        print("当前计算的 mid 是：")
-        print(mid)
-        length = len(mid)
-        mid = mid[length - 8:length]
-        print("当前计算的 mid 是：" + mid)
+        mid = getHashCode(url)
 
         sort = selector.css("div.left-bar")[0].css("div.detail-list-title").css("a::text").extract()[0] # 倒序
 
@@ -84,7 +81,7 @@ class ManHua(Spider):
             print("chapterName->" + chapterName +
                   ",\nchapterName_p->" + chapterName_p +
                   ",\nchapterUrl->" + chapterUrl +
-                  ",\nmid->" + mid
+                  ",\nmid->" + str(mid)
                   )
             yield insertData2DB(mid, chapterName, chapterUrl, chapterName_p, count)
 
