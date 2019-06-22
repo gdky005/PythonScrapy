@@ -35,11 +35,7 @@ class ManHua(Spider):
         data = f.read()
         text = json.loads(data)
 
-        for i in range(1, 11):
-        # for i in range(1, 21):
-        # for i in range(21, 51):
-        # for i in range(21, 31):
-        # for i in range(1, 6): // OK!
+        for i in range(1, 376):
         #     ipIndex = text[random.randint(0, len(text) - 1)]
             ipIndex = text[i % len(text)]
 
@@ -58,7 +54,9 @@ class ManHua(Spider):
             # time.sleep(1)
 
             print(i)
-            url = "http://zkteam.cc/manhua/f-1------updatetime--1.html"
+            # url = "http://zkteam.cc/manhua/f-1------updatetime--1.html"
+            # url = "http://127.0.0.1:8081/f-1------updatetime--1.html"
+            url = "http://127.0.0.1:8081/f-1------updatetime--" + str(i) + ".html"
             # url = "https://www.tohomh123.com/f-1------updatetime--" + str(i) + ".html"
             # url = "http://httpbin.org/get"
             print(url)
@@ -70,7 +68,8 @@ class ManHua(Spider):
         # print(content)
 
         result = urlparse(response.url)
-        domain = result[0] + "://" + result[1]
+        # domain = result[0] + "://" + result[1]
+        domain = "https://www.tohomh123.com"
         print(domain)
 
         selector = Selector(text=content)

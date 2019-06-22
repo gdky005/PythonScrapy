@@ -40,7 +40,8 @@ class ManhuaPipeline(object):
             errorCode = args[0]
             errorMsg = args[1]
             if 1062 == errorCode:
-                print("\n『>>>>>>>>> mid 键重复，无需处理：" + errorMsg + "<<<<<<< 』\n\n")
+                print(
+                    "\n『>>>>>>>>> mid 键重复，name=" + name + ", mid2=" + mid2 + ", mid=" + str(mid) + "无需处理：" + errorMsg + "<<<<<<< 』\n\n")
             else:
                 print("异常原因：" + str(e))
             pass
