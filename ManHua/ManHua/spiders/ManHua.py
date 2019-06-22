@@ -35,7 +35,8 @@ class ManHua(Spider):
     name = "ManHua"
     start_urls = [
         # "http://127.0.0.1:8081/chaojiweixin",
-        "https://www.tohomh123.com/zhenhunjie/",
+        # "https://www.tohomh123.com/zhenhunjie/",
+        "https://www.tohomh123.com/yirenzhixia/",
         # "https://www.tohomh123.com/f-1------updatetime--1.html",
         # "https://www.tohomh123.com/f-1-1-----hits--1.html",
         # "https://www.tohomh123.com",
