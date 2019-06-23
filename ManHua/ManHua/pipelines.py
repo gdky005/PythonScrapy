@@ -14,6 +14,7 @@ class ManhuaPipeline(object):
     def __init__(self):
         self.conn = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.password,
                                     db=self.database_name, charset=self.charset)
+        self.cursor = self.conn.cursor()
 
     def process_item(self, item, spider):
         # 给库中插入数据
@@ -55,5 +56,6 @@ class ManhuaPipeline(object):
 
         return item
 
-    def close_spider(self):
+    def close_spider(self,spider):
+        self.cursor.close()
         self.conn.close()
