@@ -1,3 +1,5 @@
+import requests
+import scrapy
 from scrapy import Selector
 from scrapy.spiders import Spider
 
@@ -43,6 +45,31 @@ class ManHua(Spider):
         # "http://www.gamersky.com/z/playbattlegrounds/",
     ]
 
+    def start_requests(self):
+
+        page = 1
+        pageCount = 5
+        urlSource = "http://zkteam.cc/ManHua/jsonMHAllData?page=" + str(page) + "&pageCount=" + str(pageCount)
+
+        res = requests.get(urlSource)
+        resultList = res.json()['result']
+
+        i = 0
+        for data in resultList:
+            i = i+1
+
+            url = data['mhUrl']
+            id = data['id']
+            idStr = str(id)
+            id = idStr.zfill(5)
+
+            fileName = url[url.rindex("com/") + 4: len(url) - 1]
+            baseUrl = "http://127.0.0.1:8081/" + id + "_" + fileName
+            print(baseUrl)
+            yield self.make_requests_from_url(baseUrl)
+
+        yield
+
     def __init__(self):
         super(ManHua, self).__init__()
 
@@ -54,7 +81,11 @@ class ManHua(Spider):
 
         pic = selector.css("div.cover").css("img::attr('src')").extract()[0] # 'https://mh1.zhengdongwuye.cn/pic/manhua/images/688714201872.jpg'
         title = selector.css("div.info").css("h1::text").extract()[0] #'镇魂街'
-        remind = selector.css("div.info").css("em.remind").css("em::text").extract()[0] # 每月1号,11号,21号上传新章节或于隔日上午更新（注意这个隔日）
+        remind = selector.css("div.info").css("em.remind").css("em::text").extract() # 每月1号,11号,21号上传新章节或于隔日上午更新（注意这个隔日）
+        if len(remind) > 0:
+            remind = remind[0]
+        else:
+            remind = ""
 
         author = selector.css("div.info").css("p::text").extract()[0] #'作者：许辰'
         author = author[author.index("：")+1:]
