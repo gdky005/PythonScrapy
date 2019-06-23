@@ -95,3 +95,6 @@ ENV/
 # Rope project settings
 .ropeproject
 
+manhuaDetail/
+manhuaDetail/nodeJSServer.js
+
