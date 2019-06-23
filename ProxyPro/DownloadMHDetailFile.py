@@ -1,5 +1,6 @@
 import json
 import time
+from datetime import datetime
 
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
@@ -81,14 +82,25 @@ def getStr(data):
 
 jsonListNew = jsonList
 
-page = 2
+
+def showCurrentTime(msg):
+    now_time = datetime.now()
+    time_str = datetime.strftime(now_time, '%Y-%m-%d %H:%M:%S')
+    print(msg + ": " + time_str)
+
+
+showCurrentTime("当前任务开始时间")
+
+page = 5
 pageCount = 200
 urlSource = "http://zkteam.cc/ManHua/jsonMHAllData?page=" + str(page) + "&pageCount=" + str(pageCount)
 
 res = requests.get(urlSource)
 resultList = res.json()['result']
 
-i = 0
+showCurrentTime("从服务器获取数据成功，开始处理")
+
+index = 0
 for data in resultList:
     # ipIndex = text[random.randint(0, len(text) - 1)]
     # ipIndex = text[i % len(text)]
@@ -104,10 +116,13 @@ for data in resultList:
     # 禁用安全请求警告
     requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
+    showCurrentTime("处理任务中")
+    print("当前 index ---> " + str(index) + "/" + str(pageCount) + ", "
+          + str((page - 1) * pageCount + index) + "/" + str(page * pageCount))
     print("可用的 ip 列表是：" + getStr(jsonListNew) + "/" + getStr(jsonList))
 
-    ip = jsonList[i % len(jsonListNew)]
-    i = i + 1
+    ip = jsonList[index % len(jsonListNew)]
+    index = index + 1
     scheme = ip["type"]
     domain = ip["url"]
 
@@ -117,6 +132,7 @@ for data in resultList:
     code = getFile(url, headers, proxies, id)
 
     if 1 == code:
+        showCurrentTime("成功处理一条")
         continue
     else:
         jsonListNew.remove(ip)
@@ -131,15 +147,23 @@ for data in resultList:
             code = getFile(url, headers, proxies, id)
 
             if 1 == code:
+                showCurrentTime("成功处理一条")
                 break
             else:
                 jsonListNew.remove(ip)
 
+            showCurrentTime("使用 新 ip 处理成功")
             print("可用的 ip 列表是：" + getStr(jsonListNew) + "/" + getStr(jsonList))
+    showCurrentTime("处理完一个任务")
     print("可用的 ip 列表是：" + getStr(jsonListNew) + "/" + getStr(jsonList))
+
+showCurrentTime("处理任务全部完成")
 print("可用的 ip 列表是：" + getStr(jsonListNew) + "/" + getStr(jsonList))
 
+showCurrentTime("ip 处理成功，存入文件中")
 fileName = "new_detail_avilable_ip.txt"
 fileObject = open("/Users/WangQing/PycharmProjects/ScrapyPro/ProxyPro/" + fileName, 'w+')
 fileObject.write(str(jsonListNew).replace("'", "\"") + "\n")
 fileObject.close()
+
+showCurrentTime("整个流程全部处理完成")
