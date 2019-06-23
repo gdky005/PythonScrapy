@@ -82,7 +82,7 @@ def getStr(data):
 jsonListNew = jsonList
 
 page = 1
-pageCount = 5
+pageCount = 100
 urlSource = "http://zkteam.cc/ManHua/jsonMHAllData?page=" + str(page) + "&pageCount=" + str(pageCount)
 
 res = requests.get(urlSource)
