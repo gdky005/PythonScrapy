@@ -30,7 +30,8 @@ def getFile(url1, header, proxies1, id):
 
             print("获取文件内容成功，准备写入到文件中：" + fileName)
 
-            fileObject = open("/Users/WangQing/PycharmProjects/ScrapyPro/ProxyPro/manhuaDetail/" + fileName, 'w+')
+            fileObject = open("/Users/WangQing/PycharmProjects/ScrapyPro/ProxyPro/manhuaDetail/1000-2000/" + fileName, 'w+')
+            # fileObject = open("/Users/WangQing/PycharmProjects/ScrapyPro/ProxyPro/manhuaDetail/" + fileName, 'w+')
             fileObject.write(content + "\n")
             fileObject.close()
             return 1
@@ -89,10 +90,17 @@ def showCurrentTime(msg):
     print(msg + ": " + time_str)
 
 
+def getCurrentTime():
+    now_time = datetime.now()
+    time_str = datetime.strftime(now_time, '%Y_%m_%d_%H_%M_%S')
+    return time_str
+
+
 showCurrentTime("当前任务开始时间")
 
-page = 5
-pageCount = 200
+
+page = 2
+pageCount = 1000
 urlSource = "http://zkteam.cc/ManHua/jsonMHAllData?page=" + str(page) + "&pageCount=" + str(pageCount)
 
 res = requests.get(urlSource)
@@ -161,7 +169,7 @@ showCurrentTime("处理任务全部完成")
 print("可用的 ip 列表是：" + getStr(jsonListNew) + "/" + getStr(jsonList))
 
 showCurrentTime("ip 处理成功，存入文件中")
-fileName = "new_detail_avilable_ip.txt"
+fileName = "new_detail_avilable_ip_" + getCurrentTime() + ".txt"
 fileObject = open("/Users/WangQing/PycharmProjects/ScrapyPro/ProxyPro/" + fileName, 'w+')
 fileObject.write(str(jsonListNew).replace("'", "\"") + "\n")
 fileObject.close()
