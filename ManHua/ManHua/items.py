@@ -16,4 +16,5 @@ class ManHuaItem(scrapy.Item):
     url = Field()
     pCount = Field()
     count = Field()
+    pid = Field()
     pass

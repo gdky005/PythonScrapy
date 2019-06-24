@@ -14,6 +14,7 @@ class ManhuaPipeline(object):
     def __init__(self):
         self.conn = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.password,
                                     db=self.database_name, charset=self.charset)
+        self.cursor = self.conn.cursor()
 
     def process_item(self, item, spider):
         # 给库中插入数据
@@ -24,14 +25,16 @@ class ManhuaPipeline(object):
         url = item['url']
         pCount = item['pCount']
         count = item['count']
+        pid = item['pid']
 
-        sql = "INSERT INTO " + self.table_name + "(mid, name, url, pCount, count) VALUES (" \
-                                                 "%s, %s, %s, %s, %s) "
-        cur.execute(sql, (mid, name, url, pCount, count))
+        sql = "INSERT INTO " + self.table_name + "(mid, name, url, pCount, count, pid) VALUES (" \
+                                                 "%s, %s, %s, %s, %s, %s) "
+        cur.execute(sql, (mid, name, url, pCount, count, pid))
         cur.close()
         self.conn.commit()
 
         return item
 
-    def close_spider(self):
+    def close_spider(self, spider):
+        self.cursor.close()
         self.conn.close()
