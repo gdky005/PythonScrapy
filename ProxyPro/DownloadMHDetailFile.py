@@ -81,6 +81,25 @@ def getStr(data):
     return str(len(data))
 
 
+def getFormatTime(seconds):
+    m, s = divmod(seconds, 60)
+    h, m = divmod(m, 60)
+    formatTime1 = "%02d:%02d:%02d" % (h, m, s)
+    # print()
+    return formatTime1
+
+
+# 字符类型的时间
+# timeStr = '2013-10-10 23:40:00'
+def getTimeStamp(timeStr):
+    # 转为时间数组
+    timeArray = time.strptime(timeStr, "%Y-%m-%d %H:%M:%S")
+    timeStamp = int(time.mktime(timeArray))  # # 1381419600
+    # print(timeStr + " ---> ")
+    # print(timeStamp)
+    return timeStamp
+
+
 jsonListNew = jsonList
 
 
@@ -88,6 +107,7 @@ def showCurrentTime(msg):
     now_time = datetime.now()
     time_str = datetime.strftime(now_time, '%Y-%m-%d %H:%M:%S')
     print(msg + ": " + time_str)
+    return time_str
 
 
 def getCurrentTime():
@@ -96,7 +116,7 @@ def getCurrentTime():
     return time_str
 
 
-showCurrentTime("当前任务开始时间")
+start_time = showCurrentTime("当前任务开始时间")
 
 
 page = 2
@@ -174,4 +194,22 @@ fileObject = open("/Users/WangQing/PycharmProjects/ScrapyPro/ProxyPro/" + fileNa
 fileObject.write(str(jsonListNew).replace("'", "\"") + "\n")
 fileObject.close()
 
-showCurrentTime("整个流程全部处理完成")
+end_time = showCurrentTime("整个流程全部处理完成")
+
+
+print("\n\n\n 任务 开始 时间：" + start_time)
+print("\n 任务 结束 时间：" + end_time + "\n\n\n")
+print("\n 任务 总共耗时：" + end_time + "\n\n\n")
+
+
+diffTime = getTimeStamp(end_time) - getTimeStamp(start_time)
+print("\n总共耗时: " + str(diffTime) + "秒")
+print("\n总共耗时: " + getFormatTime(diffTime))
+
+
+
+
+
+
+
+
