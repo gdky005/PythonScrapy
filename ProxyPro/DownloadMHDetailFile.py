@@ -1,9 +1,21 @@
 import json
+import os
 import time
 from datetime import datetime
 
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
+page = 4
+pageCount = 2000
+manhuaDetailPath = "/Users/WangQing/PycharmProjects/ScrapyPro/ProxyPro/manhuaDetail/"
+
+save_dir_name = str((page - 1) * pageCount) + "-" + str(page * pageCount)
+save_dir = manhuaDetailPath + save_dir_name
+
+isExists = os.path.exists(save_dir)
+if not isExists:
+    os.makedirs(save_dir)
 
 
 def getFile1(url1, header):
@@ -30,7 +42,7 @@ def getFile(url1, header, proxies1, id):
 
             print("获取文件内容成功，准备写入到文件中：" + fileName)
 
-            fileObject = open("/Users/WangQing/PycharmProjects/ScrapyPro/ProxyPro/manhuaDetail/1000-2000/" + fileName, 'w+')
+            fileObject = open(save_dir + "/" + fileName, 'w+')
             # fileObject = open("/Users/WangQing/PycharmProjects/ScrapyPro/ProxyPro/manhuaDetail/" + fileName, 'w+')
             fileObject.write(content + "\n")
             fileObject.close()
@@ -119,8 +131,7 @@ def getCurrentTime():
 start_time = showCurrentTime("当前任务开始时间")
 
 
-page = 2
-pageCount = 1000
+# 网络层
 urlSource = "http://zkteam.cc/ManHua/jsonMHAllData?page=" + str(page) + "&pageCount=" + str(pageCount)
 
 res = requests.get(urlSource)
@@ -199,8 +210,6 @@ end_time = showCurrentTime("整个流程全部处理完成")
 
 print("\n\n\n 任务 开始 时间：" + start_time)
 print("\n 任务 结束 时间：" + end_time + "\n\n\n")
-print("\n 任务 总共耗时：" + end_time + "\n\n\n")
-
 
 diffTime = getTimeStamp(end_time) - getTimeStamp(start_time)
 print("\n总共耗时: " + str(diffTime) + "秒")
