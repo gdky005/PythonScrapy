@@ -1,4 +1,5 @@
 import requests
+import json
 from scrapy import Selector
 from scrapy.spiders import Spider
 
@@ -45,7 +46,7 @@ class ManHua(Spider):
 
     def start_requests(self):
 
-        page = 2
+        page = 6
         # pageCount = 2
         pageCount = 2000
         urlSource = "http://zkteam.cc/ManHua/jsonMHAllData?page=" + str(page) + "&pageCount=" + str(pageCount)
@@ -107,6 +108,7 @@ class ManHua(Spider):
 
         chapterItem = selector.css("div.left-bar")[0].css("ul.view-win-list.detail-list-select")[1].css("li")
 
+        data_json = []
         for chapter in chapterItem:
             chapterName = chapter.css("a::text").extract()[0]
             chapterName_p = chapter.css("a").css("span::text").extract()[0]
@@ -126,7 +128,39 @@ class ManHua(Spider):
                   ",\nchapterUrl->" + chapterUrl +
                   ",\nmid->" + str(mid)
                   )
-            yield insertData2DB(mid, chapterName, chapterUrl, chapterName_p, count, chapterId)
+            # yield insertData2DB(mid, chapterName, chapterUrl, chapterName_p, count, chapterId)
+
+            data_json.append({
+                "name": chapterName,
+                "pCount": chapterName_p,
+                "url": chapterUrl})
+
+        url = 'http://zkteam.cc/ManHua/setJsonMHChapterData'
+        # url = 'http://127.0.0.1:8001/ManHua/setJsonMHChapterData'
+        # data_json = {'name': 'cuiyongyuan', 'job': 'hero'}
+        # [{
+        #     "name": "01 第一话  百鬼夜行 2010-02-03",
+        #     "pCount": "（26P）",
+        #     "url": "https://www.tohomh123.com/zhenhunjie/1.html"
+        # }, {
+        #     "name": "02 第二话  火将军 2010-02-18",
+        #     "pCount": "（17P）",
+        #     "url": "https://www.tohomh123.com/zhenhunjie/2.html"
+        # },
+        #     {
+        #         "name": "第三话 地狱道 内容预告 2010-03-17",
+        #         "pCount": "（10P）",
+        #         "url": "https://www.tohomh123.com/zhenhunjie/3.html"
+        #     }
+        # ]
+
+        data_json = json.dumps(data_json)
+        resp = requests.post(url, data_json)
+
+        if resp.status_code == 200:
+            print("请求成功")
+        else:
+            print("访问失败")
 
 
 # 插入数据到数据库中
