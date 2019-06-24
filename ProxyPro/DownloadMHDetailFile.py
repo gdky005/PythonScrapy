@@ -6,10 +6,11 @@ from datetime import datetime
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
-page = 4
-pageCount = 2000
+page = 57
+pageCount = 200
 manhuaDetailPath = "/Users/WangQing/PycharmProjects/ScrapyPro/ProxyPro/manhuaDetail/"
 
+# save_dir_name = str((page - 1) * pageCount) + "-" + str(page * pageCount)
 save_dir_name = str((page - 1) * pageCount) + "-" + str(page * pageCount)
 save_dir = manhuaDetailPath + save_dir_name
 
