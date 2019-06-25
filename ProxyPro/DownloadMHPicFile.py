@@ -6,8 +6,8 @@ from datetime import datetime
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
-page = 1
-pageCount = 5
+page = 2
+pageCount = 2000
 
 manhuaDetailPath = "/Users/WangQing/PycharmProjects/ScrapyPro/ProxyPro/manhuaPic/"
 
