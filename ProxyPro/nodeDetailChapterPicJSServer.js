@@ -1,7 +1,7 @@
 var http = require('http');
 var fs = require('fs');//引入文件读取模块
 
-var documentRoot = '/Users/WangQing/PycharmProjects/ScrapyPro/ProxyPro/manhuaDetail';
+var documentRoot = '/Users/WangQing/PycharmProjects/ScrapyPro/ProxyPro/manhuaPic';
 //需要访问的文件的存放目录（项目所在位置的文件夹路径）
 
 var server= http.createServer(function(req,res){

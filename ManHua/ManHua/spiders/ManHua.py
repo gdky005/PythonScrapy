@@ -83,43 +83,41 @@ class ManHua(Spider):
         data = f.read()
         text = json.loads(data)
 
-        page = 1
-        pageCount = 2
-        # pageCount = 2000
+        page = 6
+        # pageCount = 2
+        pageCount = 2000
         urlSource = "http://zkteam.cc/ManHua/jsonMHAllData?page=" + str(page) + "&pageCount=" + str(pageCount)
 
         res = requests.get(urlSource)
         resultList = res.json()['result']
 
-        index = 0
-        for result in resultList:
-            ipIndex = text[index % len(text)]
+        start = (page - 1) * pageCount
+        if start <= 0:
+            start = 0
+        end = page * pageCount
 
-            scheme = ipIndex["type"]
-            domain = ipIndex["url"]
+        if end < 2000:
+            end = 2000
 
-            url1 = domain
-            print(url1)
-            proxy = url1
+        dir = str(start) + "-" + str(end)
 
-            # headers = {'Host': 'tohomh123.com',
-            #            'Connection': 'keep-alive',
-            #            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.26 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/517.36',
-            #            'Referer': 'http://www.tohomh123.com/'}
+        i = 0
+        for data in resultList:
+            i = i + 1
 
-            # time.sleep(1)
+            url = data['mhNewUrl']
+            id = data['id']
+            idStr = str(id)
+            id = idStr.zfill(5)
 
-            print(index)
-            index = index + 1
+            fileName = url[url.rindex("/") + 1: len(url) - 1]
 
-            url = result['mhNewUrl']
-            print(url)
-            try:
-                yield scrapy.Request(url=url, meta={'download_timeout': 5, 'proxy': proxy}, callback=self.parse)
-            except Exception as e:
-                print("产生异常：" + e)
+            # http://127.0.0.1:8081/0-2000/00001_22.htm
+            baseUrl = "http://127.0.0.1:8081/" + dir + "/" + id + "_" + fileName[0:len(fileName)]
+            print(baseUrl)
+            yield self.make_requests_from_url(baseUrl)
 
-                pass
+        yield
 
     def parse(self, response):
         content = response.body.decode("utf-8")
@@ -159,14 +157,8 @@ class ManHua(Spider):
 
         mid = getHashCode(id1)
 
-        # chapterId = chapterUrl[chapterUrl.rindex("/") + 1: chapterUrl.rindex(".")]
-        # chapterId = chapterId.zfill(3)
-        # chapterId = str(mid) + chapterId
-        #
-        # chapterUrl = "https://www.tohomh123.com" + chapterUrl
-
         sourceUrl = response.url
-
+        sourceUrl = "https://www.tohomh123.com/" +id1 + "/" + sourceUrl[sourceUrl.rindex("_") + 1 : sourceUrl.rindex(".")] +".html"
         print("首张图片地址是：" + pic + ", 总共：" + count + " P" + ", id1=" + id1 + ", id2=" + id2 + ", sourceUrl=" + sourceUrl)
         yield insertData2DB(mid, id1, pic, count, sourceUrl)
 
