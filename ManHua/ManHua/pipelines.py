@@ -14,6 +14,7 @@ class ManhuaPipeline(object):
     def __init__(self):
         self.conn = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.password,
                                     db=self.database_name, charset=self.charset)
+        self.cursor = self.conn.cursor()
 
     def process_item(self, item, spider):
         # 给库中插入数据
@@ -23,12 +24,26 @@ class ManhuaPipeline(object):
         newPage = item['newPage']
         name = item['name']
 
-        sql = "INSERT INTO " + self.table_name + " (picUrl, newPage, name) VALUES (%s, %s, %s)"
-        cur.execute(sql, (picUrl, newPage, name))
-        cur.close()
-        self.conn.commit()
+        try:
+            sql = "INSERT INTO " + self.table_name + " (picUrl, newPage, name) VALUES (%s, %s, %s)"
+            cur.execute(sql, (picUrl, newPage, name))
+            cur.close()
+            self.conn.commit()
+            return item
 
-        return item
+        except Exception as e:
+            args = e.args
+            errorCode = args[0]
+            errorMsg = args[1]
+            if 1062 == errorCode:
+                print(
+                    "\n『>>>>>>>>> mid 键重复:" + ", name=" + name + "无需处理：" + errorMsg + "<<<<<<< 』\n\n")
+            else:
+                print("异常原因：" + str(e))
+            pass
 
-    def close_spider(self):
+
+
+    def close_spider(self, spider):
+        self.cursor.close()
         self.conn.close()
