@@ -1,6 +1,8 @@
 from scrapy import Selector
 from scrapy.spiders import Spider
 
+from Utils import getHashCode
+
 
 def getPic(selector):
     # 获取图片
@@ -11,6 +13,15 @@ def getPic(selector):
 
         # print("pic: " + pic)
         return pic
+
+
+def getMid2(selector):
+    # 获取图片
+    picList = selector.css("div.mh-item").css("a::attr('href')").extract()
+    for mid2Str in picList:
+        mid2 = mid2Str[mid2Str.index("/") + 1 : mid2Str.rindex("/")]
+        # print("mid2: " + mid2)
+        return mid2
 
 
 def getNewPageName(selector):
@@ -44,11 +55,15 @@ class ManHua(Spider):
         content = response.body.decode("utf-8")
         # print(content)
 
+        url = response.url
+
         selector = Selector(text=content)
 
         itemSelector = selector.css("div.mh-item")
 
         for item in itemSelector:
+            mid2 = getMid2(item)
+            mid = getHashCode(mid2)
             pic = getPic(item)
             title = getTitle(item)
             newPageName = getNewPageName(item)
@@ -57,13 +72,15 @@ class ManHua(Spider):
                   "\ntitle->" + title +
                   "\nnewPageName->" + newPageName
                   )
-            yield insertData2DB(pic, newPageName, title)
+            yield insertData2DB(mid, mid2, pic, newPageName, title)
 
 
 # 插入数据到数据库中
-def insertData2DB(picUrl, newPage, name):
+def insertData2DB(mid, mid2, picUrl, newPage, name):
     from ManHua.items import ManHuaItem
     item = ManHuaItem()
+    item['mid'] = mid
+    item['mid2'] = mid2
     item['picUrl'] = picUrl
     item['newPage'] = newPage
     item['name'] = name
