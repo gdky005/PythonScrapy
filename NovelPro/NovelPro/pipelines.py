@@ -26,12 +26,15 @@ class NovelProPipeline(object):
         cur = self.conn.cursor()
 
         pid = item['pid']
-        url = item['url']
         name = item['name']
+        author = item['author']
+        content = item['content']
+        url = item['url']
         sourceUrl = item['sourceUrl']
 
-        sql = "INSERT INTO " + self.table_name + " (pid, url, sourceUrl, name) VALUES (%s, %s, %s, %s)"
-        cur.execute(sql, (pid, url, sourceUrl, name))
+        sql = "INSERT INTO " + self.table_name + "(pid, name, url, author, content, sourceUrl) VALUES (%s, %s, %s, " \
+                                                 "%s, %s, %s) "
+        cur.execute(sql, (pid, name, url, author, content, sourceUrl))
         cur.close()
         self.conn.commit()
 

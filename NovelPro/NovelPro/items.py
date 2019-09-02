@@ -17,3 +17,14 @@ class NovelproItem(scrapy.Item):
     name = Field()
     sourceUrl = Field()
     pass
+
+class NovelDetailItem(scrapy.Item):
+    # define the fields for your item here like:
+    # name = scrapy.Field()
+    pid = Field()
+    name = Field()
+    author = Field()
+    content = Field()
+    url = Field()
+    sourceUrl = Field()
+    pass
