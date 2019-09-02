@@ -1,6 +1,8 @@
 from scrapy import Selector
 from scrapy.spiders import Spider
 
+from Utils import getHashCode
+
 
 class NovelPro(Spider):
     name = "NovelPro"
@@ -25,4 +27,6 @@ class NovelPro(Spider):
         for chapterName in chapterNameExtract:
             name = chapterName.css("a::text").extract()[0]
             url = chapterName.css("a::attr(href)").extract()[0]
-            print("我需要的名称：" + name + ", url=" + url)
+            id = getHashCode(name)
+
+            print("我需要的名称：" + name + ", url=" + url + ", id=" + str(id))
