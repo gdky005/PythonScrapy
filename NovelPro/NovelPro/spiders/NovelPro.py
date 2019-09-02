@@ -1,4 +1,5 @@
 import urllib
+from urllib.parse import urlparse
 
 from scrapy import Selector
 from scrapy.spiders import Spider
@@ -18,16 +19,11 @@ class NovelPro(Spider):
     def parse(self, response):
         content = response.body.decode('utf-8')
         url = response.url
-        # print(content)
-
         # print("爬取的内容如下：" + content)
 
         selector = Selector(text=content)
-
-        # selector.css("dl.cat-list").css("dd")
         chapterNameExtract = selector.css("div.wen-box")
 
-        nextUrl = ""
         detailStr = ""
         for chapterName in chapterNameExtract:
             name = chapterName.css("h2::text").extract()[0]
@@ -52,23 +48,25 @@ class NovelPro(Spider):
                     break
                 mPageNum = pageNum[index]
                 mPageUrl = pageUrl[index]
-
-                nextUrl = mPageUrl
-
                 print("当前页数是：" + mPageNum + ", pageUrl=" + mPageUrl)
+
+                # 获取当前页面 索引的下一页
+                res = urlparse(url)
+                if mPageUrl == res.path:
+                    nextPage = pageUrl[index + 1]
+                    detailStr = self.getNextPageContent(detailStr, nextPage)
 
             print("\n名字=" + name
                   + ", \nauthor=" + author
                   + ", \nurl=" + url)
 
-            # print("\ndetailStr：" + detailStr)
+        print("\ndetailStr：\n" + detailStr)
 
-
+    def getNextPageContent(self, detailStr, nextUrl):
         resp = requests.get("https://m.liyuxiang.net/" + nextUrl)
         content = resp.text
         selector1 = Selector(text=content)
         chapterNameExtract1 = selector1.css("div.wen-box")
-
         for chapterName in chapterNameExtract1:
             details = chapterName.css("div.shiwen").css("p::text").extract()
             for index, detailItem in enumerate(details):
@@ -76,5 +74,4 @@ class NovelPro(Spider):
                     break
                 if detailItem != "":
                     detailStr += "    " + detailItem + "\n"
-
-        print("\ndetailStr：\n" + detailStr)
+        return detailStr
