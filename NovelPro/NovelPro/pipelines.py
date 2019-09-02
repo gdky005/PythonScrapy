@@ -25,12 +25,13 @@ class NovelProPipeline(object):
         # 给库中插入数据
         cur = self.conn.cursor()
 
-        number = item['number']
-        question = item['question']
-        answer = item['answer']
+        pid = item['pid']
+        url = item['url']
+        name = item['name']
+        sourceUrl = item['sourceUrl']
 
-        sql = "INSERT INTO " + self.table_name + " (number, question, answer) VALUES (%s, %s, %s)"
-        cur.execute(sql, (number, question, answer))
+        sql = "INSERT INTO " + self.table_name + " (pid, url, sourceUrl, name) VALUES (%s, %s, %s, %s)"
+        cur.execute(sql, (pid, url, sourceUrl, name))
         cur.close()
         self.conn.commit()
 
