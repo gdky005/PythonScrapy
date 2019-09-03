@@ -1,6 +1,7 @@
 import urllib
 from urllib.parse import urlparse
 
+import scrapy
 from scrapy import Selector
 from scrapy.spiders import Spider
 import requests
@@ -14,8 +15,18 @@ class NovelPro(Spider):
     name = "NovelPro"
     start_urls = [
         # "https://m.liyuxiang.net/gushi/duanpianxiaoshuo.html",
-        "https://m.liyuxiang.net/gushi/2/12795.html",
+        # "https://m.liyuxiang.net/gushi/2/12795.html",
+        "http://127.0.0.1:8001/Novel/jsonNovel?pageCount=50",
     ]
+
+    # 开启后，默认爬取接口中的 url, 参考：https://www.v2ex.com/t/433791
+    def start_requests(self):
+        result = requests.get("http://127.0.0.1:8001/Novel/jsonNovel?pageCount=50")
+        resultData = result.json()["result"]
+
+        for data in resultData:
+            url = data["sourceUrl"]
+            yield scrapy.Request(url=url, callback=self.parse)
 
     def __init__(self):
         super(NovelPro, self).__init__()
